@@ -1,0 +1,13 @@
+.java-script {
+  background-color: $color-dimgray;
+  &__img {
+    width: 161px;
+    height: 161px;
+  }
+  &__title {
+    color: $text-color;
+  }
+  &__posts {
+    text-align: center;
+  }
+}

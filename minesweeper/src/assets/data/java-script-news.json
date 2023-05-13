@@ -1,0 +1,18 @@
+[
+    {
+        "name": "first post about javascript",
+        "body": "first news text"
+    },
+    {
+        "name": "second post about javascript",
+        "body": "text of the second news"
+    },
+    {
+        "name": "third post about javascript",
+        "body": "third news text"
+    },
+    {
+        "name": "fourth post about javascript",
+        "body": "text of the fourth news"
+    }
+]

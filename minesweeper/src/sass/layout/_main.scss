@@ -1,0 +1,11 @@
+.main {
+  &__container {
+    background-color: $light-grey;
+  }
+  &__title {
+    color: $dark-grey;
+  }
+  &__img {
+    width: 366px;
+  }
+}

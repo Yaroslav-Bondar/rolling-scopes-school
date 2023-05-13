@@ -1,0 +1,13 @@
+// -----------------------------------------------------------------------------
+// This file contains all @font-face declarations, if any.
+// -----------------------------------------------------------------------------
+@import '../abstracts/_mixins/font-face.scss';
+
+// connecting fonts
+@include font-face('Montserrat', '../../../assets/font/montserrat/black/montserrat-black', 900);
+@include font-face('Montserrat', '../../../assets/font/montserrat/extrabold/montserrat-extrabold', 800);
+@include font-face("montserrat-bold, sans-serif;", '../../../assets/font/montserrat/bold/montserrat-bold', 700);
+@include font-face('Montserrat', '../../../assets/font/montserrat/semibold/montserrat-semibold', 600);
+@include font-face("montserrat-medium, sans-serif", '../../../assets/font/montserrat/medium/montserrat-medium', 500);
+@include font-face("montserrat-regular, sans-serif;", '../../../assets/font/montserrat/regular/montserrat-regular', 400);
+@include font-face('Montserrat', '../../../assets/font/montserrat/light/montserrat-light', 300);

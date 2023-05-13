@@ -1,0 +1,19 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: no-repeat/cover url(../img/wind_farm.jpg);
+}
+
+@import 'block/header.css';
+@import 'block/title.css';
+@import 'block/news.css';
+@import 'block/footer.css';
+
+@media screen and (max-width: 700px) {
+    .header {
+        font-size: 40px;
+        color: brown;
+    }    
+}

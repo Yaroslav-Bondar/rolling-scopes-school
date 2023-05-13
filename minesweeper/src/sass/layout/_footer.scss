@@ -1,0 +1,14 @@
+// -----------------------------------------------------------------------------
+// This file contains all styles related to the footer of the site/application.
+// -----------------------------------------------------------------------------
+.footer {
+  &__container {
+    text-align: center;
+    background-color: $dark-grey;
+    color: $color-white;
+    @include ph {
+        color: $text-color;
+        background-color: $brand-color;
+    }
+  }
+}

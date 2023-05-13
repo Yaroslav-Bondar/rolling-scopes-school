@@ -1,0 +1,14 @@
+// -----------------------------------------------------------------------------
+// This file contains all styles related to the header of the site/application.
+// -----------------------------------------------------------------------------
+.header {
+  &__container {
+    text-align: center;
+    background-color: $dark-grey;
+    color: $color-white;
+    @include ph {
+      color: $brand-color;
+      background-color: $dark-grey;
+    }
+  }
+}

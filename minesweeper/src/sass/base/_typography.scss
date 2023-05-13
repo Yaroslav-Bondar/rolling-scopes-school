@@ -1,0 +1,10 @@
+/**
+ * Basic typography style for copy text
+ */
+
+body {
+  @include font-montserrat-regular;
+  font-size: $base-font-size;
+  line-height: $line-height-base;
+  color: $text-color;
+}

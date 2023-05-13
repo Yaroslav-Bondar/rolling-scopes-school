@@ -1,0 +1,20 @@
+// media expressions
+@mixin media($width) {
+    @media screen and (min-width: $width) {
+        @content;
+    }
+}
+
+// check point 
+@mixin bp {
+    $width: map-get($breakpoints, $name);
+    @include media($width) {
+        @content;
+    }
+}
+
+@mixin ph {
+    @media screen and (max-width: 700px) {
+        @content;
+    }
+}

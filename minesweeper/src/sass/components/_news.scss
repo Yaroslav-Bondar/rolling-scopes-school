@@ -1,0 +1,15 @@
+.news {
+    background-color: transparent;
+    &__title {
+        @include font-montserrat-bold;
+        font-size: 22px;
+        color: $text-color;
+        @include ph {
+            color: $color-salmon;
+            border-color: $color-brown;
+        }
+    }
+    &__text {
+        @include font-montserrat-medium;
+    }
+}

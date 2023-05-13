@@ -1,0 +1,15 @@
+.news {
+    font-size: 22px;
+    color: blueviolet;
+}
+.news__title {
+    color: red;
+}
+
+@media screen and (max-width: 700px) {
+    .news__title {
+        font-size: 30px;
+        color: burlywood;
+        text-align: center;
+    }    
+}

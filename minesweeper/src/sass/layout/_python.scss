@@ -1,0 +1,13 @@
+.python {
+  background-color: $mid-grey;
+  &__img {
+    width: 161px;
+    height: 161px;
+  }
+  &__title {
+    color: $text-color;
+  }
+  &__posts {
+    text-align: center;
+  }
+}
