@@ -1,0 +1,11 @@
+const OPENED_CELL_COLOR = 'rgb(237, 237, 237)';
+
+const CLOSED_CELL_COLOR = 'rgb(153, 153, 153)';
+
+const INACTIVE_CELL_COLOR = 'rgb(68, 68, 68)';
+
+module.exports = {
+  OPENED_CELL_COLOR,
+  CLOSED_CELL_COLOR,
+  INACTIVE_CELL_COLOR,
+};
