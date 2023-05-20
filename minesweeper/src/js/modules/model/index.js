@@ -1,10 +1,16 @@
 const { makeRandomNumber } = require('../../services/makeRandomNumber');
+
 const {
   OPENED_CELL_STATE,
   MARKED_CELL_STATE,
   MINED_CELL_STATE,
   NUMBER_CELL_STATE,
 } = require('../../constants/cellStates');
+
+const {
+  WIN_GAME_STATUS,
+  GAME_OVER_STATUS,
+} = require('../../constants/gameStatus');
 
 class Model {
   #gameField = [];
@@ -13,7 +19,7 @@ class Model {
 
   #isGameFieldNumbered = false;
 
-  #isGameOver = false;
+  #gameStatus;
 
   #rows;
 
@@ -21,7 +27,13 @@ class Model {
 
   #numberMines;
 
+  #amountCells;
+
   #numberMarkedCells = 0;
+
+  #numberMarkedMines = 0;
+
+  #numberOpenedCells = 0;
 
   #CELL_DEFAULT_STATE = {
     [OPENED_CELL_STATE]: false,
@@ -36,6 +48,7 @@ class Model {
     if (rows * columns <= numberMines) throw new Error('Wrong number of mines');
     this.#rows = rows;
     this.#columns = columns;
+    this.#amountCells = rows * columns;
     this.#numberMines = numberMines;
     this.#createPlayingField();
   }
@@ -128,6 +141,8 @@ class Model {
   }
 
   openCell(rowIndex, cellIndex) {
+    this.#numberOpenedCells += 1;
+
     if (!this.#isGameFieldMined) {
       this.#minePlayingField(rowIndex, cellIndex);
     }
@@ -135,22 +150,55 @@ class Model {
       this.#numberPlayingField();
     }
     if (this.#gameField[rowIndex][cellIndex][MINED_CELL_STATE]) {
-      this.#isGameOver = true;
+      this.#gameStatus = GAME_OVER_STATUS;
     } else if (!this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]) {
       this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE] = true;
       this.#openNeighboringCells(rowIndex, cellIndex);
     }
-    this.#onCellChanged(this.#gameField, this.#isGameOver);
+    if (this.#numberOpenedCells + this.#numberMarkedMines === this.#amountCells) {
+      this.#gameStatus = WIN_GAME_STATUS;
+    }
+
+    this.#onCellChanged(this.#gameField, this.#gameStatus);
   }
 
   markCell(rowIndex, cellIndex) {
-    this.#numberMarkedCells += 1;
-    if (this.#numberMarkedCells >= this.#numberMines) return;
-
-    if (!this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]) {
+    if (
+      !this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]
+      && !this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]
+      && !this.#gameField[rowIndex][cellIndex][MINED_CELL_STATE]
+    ) {
       this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE] = true;
+      this.#numberMarkedCells += 1;
+    } else if (
+      !this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]
+      && this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]
+      && !this.#gameField[rowIndex][cellIndex][MINED_CELL_STATE]
+    ) {
+      this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE] = false;
+      this.#numberMarkedCells -= 1;
+    } else if (
+      !this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]
+      && !this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]
+      && this.#gameField[rowIndex][cellIndex][MINED_CELL_STATE]
+    ) {
+      this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE] = true;
+      this.#numberMarkedCells += 1;
+      this.#numberMarkedMines += 1;
+    } else if (
+      !this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]
+      && this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]
+      && this.#gameField[rowIndex][cellIndex][MINED_CELL_STATE]
+    ) {
+      this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE] = false;
+      this.#numberMarkedCells -= 1;
+      this.#numberMarkedMines -= 1;
     }
-    this.#onCellChanged(this.#gameField);
+    if (this.#numberOpenedCells + this.#numberMarkedMines === this.#amountCells) {
+      this.#gameStatus = WIN_GAME_STATUS;
+    }
+
+    this.#onCellChanged(this.#gameField, this.#gameStatus);
   }
 
   #openNeighboringCells(rowIndex, cellIndex) {
@@ -172,6 +220,7 @@ class Model {
       rowIndex: currentRowIndex,
       cellIndex: currentCellIndex,
     } = currentAddress;
+
     if (
       this.#gameField[currentRowIndex][currentCellIndex][NUMBER_CELL_STATE] === 0
       && !this.#gameField[neighborRowIndex][neighborCellIndex][MINED_CELL_STATE]
@@ -179,6 +228,7 @@ class Model {
       && !this.#gameField[neighborRowIndex][neighborCellIndex][OPENED_CELL_STATE]
     ) {
       this.#gameField[neighborRowIndex][neighborCellIndex][OPENED_CELL_STATE] = true;
+      this.#numberOpenedCells += 1;
     } else if (
       this.#gameField[currentRowIndex][currentCellIndex][NUMBER_CELL_STATE] === 0
       && !this.#gameField[neighborRowIndex][neighborCellIndex][MINED_CELL_STATE]
@@ -186,6 +236,7 @@ class Model {
       && this.#gameField[neighborRowIndex][neighborCellIndex][NUMBER_CELL_STATE] === 0
     ) {
       this.#gameField[neighborRowIndex][neighborCellIndex][OPENED_CELL_STATE] = true;
+      this.#numberOpenedCells += 1;
       fn(neighborRowIndex, neighborCellIndex);
     }
   }

@@ -4,8 +4,11 @@ const CLOSED_CELL_COLOR = 'rgb(153, 153, 153)';
 
 const INACTIVE_CELL_COLOR = 'rgb(68, 68, 68)';
 
+const AMOUNT_MINE_COLOR = 'black';
+
 module.exports = {
   OPENED_CELL_COLOR,
   CLOSED_CELL_COLOR,
   INACTIVE_CELL_COLOR,
+  AMOUNT_MINE_COLOR,
 };

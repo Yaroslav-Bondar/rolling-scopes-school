@@ -4,11 +4,18 @@ const {
   MINED_CELL_STATE,
   MARKED_CELL_STATE,
 } = require('../../constants/cellStates');
+
 const {
   OPENED_CELL_COLOR,
   CLOSED_CELL_COLOR,
   INACTIVE_CELL_COLOR,
+  AMOUNT_MINE_COLOR,
 } = require('../../constants/colors');
+
+const {
+  WIN_GAME_STATUS,
+  GAME_OVER_STATUS,
+} = require('../../constants/gameStatus');
 
 class View {
   #root;
@@ -33,6 +40,8 @@ class View {
 
   #MINE_HEIGHT = 30;
 
+  #AMOUNT_MINE_FONT = '20px serif';
+
   constructor() {
     this.#root = document.getElementById('root');
     this.#gameField = document.createElement('canvas');
@@ -42,15 +51,17 @@ class View {
     this.#root.prepend(this.#gameField);
   }
 
-  draw(gameField, isGameOver) {
+  draw(gameField, gameStatus) {
     const rows = gameField.length;
     const columns = gameField[0].length;
     this.#gameField.width = this.#CELL_WIDTH * columns;
     this.#gameField.height = this.#CELL_HEIGHT * rows;
     gameField.forEach((row, rowIndex) => {
       row.forEach((cell, cellIndex) => {
-        if (isGameOver) {
+        if (gameStatus === GAME_OVER_STATUS) {
           this.#drawGameOver(rowIndex, cellIndex, cell);
+        } else if (gameStatus === WIN_GAME_STATUS) {
+          console.log('WIN !!!');
         } else if (cell[OPENED_CELL_STATE]) {
           this.#drawOpenedCell(rowIndex, cellIndex, cell);
         } else if (cell[MARKED_CELL_STATE]) {
@@ -117,7 +128,9 @@ class View {
     if (cell[NUMBER_CELL_STATE] > 0) {
       this.#ctx.textAlign = 'center';
       this.#ctx.textBaseline = 'middle';
-      this.#ctx.strokeText(
+      this.#ctx.font = this.#AMOUNT_MINE_FONT;
+      this.#ctx.fillStyle = AMOUNT_MINE_COLOR;
+      this.#ctx.fillText(
         cell[NUMBER_CELL_STATE],
         cellIndex * this.#CELL_WIDTH + this.#CELL_WIDTH / 2,
         rowIndex * this.#CELL_HEIGHT + this.#CELL_HEIGHT / 2,
