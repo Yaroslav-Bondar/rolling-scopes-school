@@ -84,12 +84,10 @@ class Model {
 
       this.#gameField[row][cell][MINED_CELL_STATE] = true;
     }
-    this.#isGameFieldMined = true;
   }
 
   #numberPlayingField() {
     this.#gameField.forEach(this.#iterateNumbering.bind(this));
-    this.#isGameFieldNumbered = true;
   }
 
   #iterateNumbering(row, rowIndex) {
@@ -145,21 +143,50 @@ class Model {
 
     if (!this.#isGameFieldMined) {
       this.#minePlayingField(rowIndex, cellIndex);
+      this.#isGameFieldMined = true;
     }
     if (!this.#isGameFieldNumbered) {
       this.#numberPlayingField();
+      this.#isGameFieldNumbered = true;
     }
     if (this.#gameField[rowIndex][cellIndex][MINED_CELL_STATE]) {
       this.#gameStatus = GAME_OVER_STATUS;
     } else if (!this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]) {
       this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE] = true;
-      this.#openNeighboringCells(rowIndex, cellIndex);
+      if (this.#gameField[rowIndex][cellIndex][NUMBER_CELL_STATE] === 0) {
+        this.#openNeighboringCells(rowIndex, cellIndex);
+      }
     }
     if (this.#numberOpenedCells + this.#numberMarkedMines === this.#amountCells) {
       this.#gameStatus = WIN_GAME_STATUS;
     }
 
     this.#onCellChanged(this.#gameField, this.#gameStatus);
+  }
+
+  #openNeighboringCells(rowIndex, cellIndex) {
+    const neighborsAddress = this.#findNeighbors(rowIndex, cellIndex);
+    neighborsAddress.forEach((neighborAddress) => this.#openAdjacentCell(
+      neighborAddress,
+      this.#openNeighboringCells.bind(this),
+    ));
+  }
+
+  #openAdjacentCell(neighborAddress, fn) {
+    const {
+      rowIndex: neighborRowIndex,
+      cellIndex: neighborCellIndex,
+    } = neighborAddress;
+    if (
+      !this.#gameField[neighborRowIndex][neighborCellIndex][MINED_CELL_STATE]
+      && !this.#gameField[neighborRowIndex][neighborCellIndex][OPENED_CELL_STATE]
+    ) {
+      this.#gameField[neighborRowIndex][neighborCellIndex][OPENED_CELL_STATE] = true;
+      this.#numberOpenedCells += 1;
+      if (this.#gameField[neighborRowIndex][neighborCellIndex][NUMBER_CELL_STATE] === 0) {
+        fn(neighborRowIndex, neighborCellIndex);
+      }
+    }
   }
 
   markCell(rowIndex, cellIndex) {
@@ -199,46 +226,6 @@ class Model {
     }
 
     this.#onCellChanged(this.#gameField, this.#gameStatus);
-  }
-
-  #openNeighboringCells(rowIndex, cellIndex) {
-    const neighborsAddress = this.#findNeighbors(rowIndex, cellIndex);
-    const currentAddress = { rowIndex, cellIndex };
-    neighborsAddress.forEach((neighborAddress) => this.#openAdjacentCell(
-      neighborAddress,
-      currentAddress,
-      this.#openNeighboringCells.bind(this),
-    ));
-  }
-
-  #openAdjacentCell(neighborAddress, currentAddress, fn) {
-    const {
-      rowIndex: neighborRowIndex,
-      cellIndex: neighborCellIndex,
-    } = neighborAddress;
-    const {
-      rowIndex: currentRowIndex,
-      cellIndex: currentCellIndex,
-    } = currentAddress;
-
-    if (
-      this.#gameField[currentRowIndex][currentCellIndex][NUMBER_CELL_STATE] === 0
-      && !this.#gameField[neighborRowIndex][neighborCellIndex][MINED_CELL_STATE]
-      && this.#gameField[neighborRowIndex][neighborCellIndex][NUMBER_CELL_STATE] > 0
-      && !this.#gameField[neighborRowIndex][neighborCellIndex][OPENED_CELL_STATE]
-    ) {
-      this.#gameField[neighborRowIndex][neighborCellIndex][OPENED_CELL_STATE] = true;
-      this.#numberOpenedCells += 1;
-    } else if (
-      this.#gameField[currentRowIndex][currentCellIndex][NUMBER_CELL_STATE] === 0
-      && !this.#gameField[neighborRowIndex][neighborCellIndex][MINED_CELL_STATE]
-      && !this.#gameField[neighborRowIndex][neighborCellIndex][OPENED_CELL_STATE]
-      && this.#gameField[neighborRowIndex][neighborCellIndex][NUMBER_CELL_STATE] === 0
-    ) {
-      this.#gameField[neighborRowIndex][neighborCellIndex][OPENED_CELL_STATE] = true;
-      this.#numberOpenedCells += 1;
-      fn(neighborRowIndex, neighborCellIndex);
-    }
   }
 }
 
