@@ -1,5 +1,8 @@
 const {
   OPENED_CELL_STATE,
+  NUMBER_CELL_STATE,
+  MINED_CELL_STATE,
+  MARKED_CELL_STATE,
 } = require('../../constants/cellStates');
 const {
   OPENED_CELL_COLOR,
@@ -18,9 +21,17 @@ class View {
 
   #GAME_FIELD_FALLBACK_TEXT = 'playing field for the classic minesweeper game';
 
+  #MINE_ICON_PATH = './assets/img/icons/naval-mine.png';
+
+  #MARK_ICON_PATH = './assets/img/icons/flag.png';
+
   #CELL_WIDTH = 40;
 
   #CELL_HEIGHT = 40;
+
+  #MINE_WIDTH = 30;
+
+  #MINE_HEIGHT = 30;
 
   constructor() {
     this.#root = document.getElementById('root');
@@ -39,13 +50,12 @@ class View {
     gameField.forEach((row, rowIndex) => {
       row.forEach((cell, cellIndex) => {
         if (isGameOver) {
-          if (!cell[OPENED_CELL_STATE]) {
-            this.#drawInactiveCell(rowIndex, cellIndex);
-          } else {
-            this.#drawOpenedCell(rowIndex, cellIndex);
-          }
+          this.#drawGameOver(rowIndex, cellIndex, cell);
         } else if (cell[OPENED_CELL_STATE]) {
-          this.#drawOpenedCell(rowIndex, cellIndex);
+          this.#drawOpenedCell(rowIndex, cellIndex, cell);
+        } else if (cell[MARKED_CELL_STATE]) {
+          this.#drawImage(rowIndex, cellIndex, this.#MARK_ICON_PATH);
+          this.#drawInactiveCell(rowIndex, cellIndex);
         } else {
           this.#drawClosedCell(rowIndex, cellIndex);
         }
@@ -53,14 +63,30 @@ class View {
     });
   }
 
+  #drawGameOver(rowIndex, cellIndex, cell) {
+    if (!cell[OPENED_CELL_STATE]) {
+      this.#drawInactiveCell(rowIndex, cellIndex);
+    } else {
+      this.#drawOpenedCell(rowIndex, cellIndex, cell);
+    }
+    if (cell[MINED_CELL_STATE]) {
+      this.#drawImage(rowIndex, cellIndex, this.#MINE_ICON_PATH);
+      this.#drawInactiveCell(rowIndex, cellIndex);
+    }
+  }
+
   #drawInactiveCell(rowIndex, cellIndex) {
+    this.#drawCell(rowIndex, cellIndex, INACTIVE_CELL_COLOR);
+  }
+
+  #drawCell(rowIndex, cellIndex, bgColor) {
     this.#ctx.strokeRect(
       cellIndex * this.#CELL_WIDTH,
       rowIndex * this.#CELL_HEIGHT,
       this.#CELL_WIDTH,
       this.#CELL_HEIGHT,
     );
-    this.#ctx.fillStyle = INACTIVE_CELL_COLOR;
+    this.#ctx.fillStyle = bgColor;
     this.#ctx.fillRect(
       cellIndex * this.#CELL_WIDTH,
       rowIndex * this.#CELL_HEIGHT,
@@ -69,46 +95,59 @@ class View {
     );
   }
 
-  #drawOpenedCell(rowIndex, cellIndex) {
-    this.#ctx.strokeRect(
-      cellIndex * this.#CELL_WIDTH,
-      rowIndex * this.#CELL_HEIGHT,
-      this.#CELL_WIDTH,
-      this.#CELL_HEIGHT,
-    );
-    this.#ctx.fillStyle = OPENED_CELL_COLOR;
-    this.#ctx.fillRect(
-      cellIndex * this.#CELL_WIDTH,
-      rowIndex * this.#CELL_HEIGHT,
-      this.#CELL_WIDTH,
-      this.#CELL_HEIGHT,
-    );
+  #drawImage(rowIndex, cellIndex, imagePath) {
+    const drawImage = (image) => {
+      this.#ctx.drawImage(
+        image,
+        (cellIndex * this.#CELL_WIDTH) + ((this.#CELL_WIDTH - this.#MINE_WIDTH) / 2),
+        (rowIndex * this.#CELL_HEIGHT) + ((this.#CELL_HEIGHT - this.#MINE_HEIGHT) / 2),
+        this.#MINE_WIDTH,
+        this.#MINE_HEIGHT,
+      );
+    };
+    const image = new Image();
+    image.src = imagePath;
+    image.onload = () => {
+      drawImage(image);
+    };
+  }
+
+  #drawOpenedCell(rowIndex, cellIndex, cell) {
+    this.#drawCell(rowIndex, cellIndex, OPENED_CELL_COLOR);
+    if (cell[NUMBER_CELL_STATE] > 0) {
+      this.#ctx.textAlign = 'center';
+      this.#ctx.textBaseline = 'middle';
+      this.#ctx.strokeText(
+        cell[NUMBER_CELL_STATE],
+        cellIndex * this.#CELL_WIDTH + this.#CELL_WIDTH / 2,
+        rowIndex * this.#CELL_HEIGHT + this.#CELL_HEIGHT / 2,
+      );
+    }
   }
 
   #drawClosedCell(rowIndex, cellIndex) {
-    this.#ctx.strokeRect(
-      cellIndex * this.#CELL_WIDTH,
-      rowIndex * this.#CELL_HEIGHT,
-      this.#CELL_WIDTH,
-      this.#CELL_HEIGHT,
-    );
-    this.#ctx.fillStyle = CLOSED_CELL_COLOR;
-    this.#ctx.fillRect(
-      cellIndex * this.#CELL_WIDTH,
-      rowIndex * this.#CELL_HEIGHT,
-      this.#CELL_WIDTH,
-      this.#CELL_HEIGHT,
-    );
+    this.#drawCell(rowIndex, cellIndex, CLOSED_CELL_COLOR);
   }
 
   bindOpenCell(handler) {
     this.#gameField.addEventListener('click', (event) => {
-      const x = event.offsetX;
-      const y = event.offsetY;
-      const cell = Math.floor(x / this.#CELL_WIDTH);
-      const row = Math.floor(y / this.#CELL_HEIGHT);
-      handler(row, cell);
+      this.#handleClick(event, handler);
     });
+  }
+
+  bindMarkCell(handler) {
+    this.#gameField.addEventListener('contextmenu', (event) => {
+      this.#handleClick(event, handler);
+    });
+  }
+
+  #handleClick(event, handler) {
+    event.preventDefault();
+    const x = event.offsetX;
+    const y = event.offsetY;
+    const rowIndex = Math.floor(y / this.#CELL_HEIGHT);
+    const cellIndex = Math.floor(x / this.#CELL_WIDTH);
+    handler(rowIndex, cellIndex);
   }
 }
 

@@ -4,19 +4,24 @@ class Controller {
   #view;
 
   constructor(Model, View) {
-    this.#model = new Model(10, 10, 50);
+    this.#model = new Model(10, 10, 2);
     this.#view = new View();
     this.#view.draw(this.#model.gameField);
-    this.#model.bindOpenedCell(this.#onOpenedCell);
+    this.#model.bindCellChanged(this.#onCellChanged);
     this.#view.bindOpenCell(this.#handleOpenCell);
+    this.#view.bindMarkCell(this.#handleMarkCell);
   }
 
-  #onOpenedCell = (gameField, isGameOver) => {
+  #onCellChanged = (gameField, isGameOver) => {
     this.#view.draw(gameField, isGameOver);
   };
 
-  #handleOpenCell = (row, cell) => {
-    this.#model.openCell(row, cell);
+  #handleOpenCell = (rowIndex, cellIndex) => {
+    this.#model.openCell(rowIndex, cellIndex);
+  };
+
+  #handleMarkCell = (rowIndex, cellIndex) => {
+    this.#model.markCell(rowIndex, cellIndex);
   };
 }
 
