@@ -9,10 +9,17 @@
       border: 2px solid $color-black;
     }
     &-status {
+      margin-top: 25px;
       @include font-montserrat-bold;
     }
   }
+
   &__display {
+    @include flex-center-v;
+    flex-flow: column;
     width: 400px;
+  }
+  &__time {
+    @include font-montserrat-medium;
   }
 }

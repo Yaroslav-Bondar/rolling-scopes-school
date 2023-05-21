@@ -19,6 +19,8 @@ class Model {
 
   #isGameFieldNumbered = false;
 
+  #timerId;
+
   #gameStatus;
 
   #rows;
@@ -35,12 +37,19 @@ class Model {
 
   #numberOpenedCells = 0;
 
+  #time = {
+    minutes: 0,
+    seconds: 0,
+  };
+
   #CELL_DEFAULT_STATE = {
     [OPENED_CELL_STATE]: false,
     [MARKED_CELL_STATE]: false,
     [MINED_CELL_STATE]: false,
     [NUMBER_CELL_STATE]: 0,
   };
+
+  #onShowTime;
 
   #onCellChanged;
 
@@ -55,6 +64,42 @@ class Model {
 
   bindCellChanged(handler) {
     this.#onCellChanged = handler;
+  }
+
+  bindShowTime(handler) {
+    this.#onShowTime = handler;
+  }
+
+  get time() {
+    return this.#time;
+  }
+
+  #startTime() {
+    let seconds = Date.now();
+    let minutes = 0;
+
+    function countTime() {
+      let currentSecond = Math.trunc((Date.now() - seconds) / 1000);
+      if (currentSecond === 60) {
+        currentSecond = 0;
+        seconds = Date.now();
+        minutes += 1;
+      }
+
+      const time = {
+        minutes,
+        seconds: currentSecond,
+      };
+
+      this.#onShowTime(time);
+    }
+
+    this.#timerId = setInterval(countTime.bind(this), 1000);
+  }
+
+  #stopTime() {
+    clearInterval(this.#timerId);
+    this.#timerId = null;
   }
 
   #createPlayingField() {
@@ -153,6 +198,7 @@ class Model {
     ) {
       this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE] = true;
       this.#numberOpenedCells += 1;
+      this.#stopTime();
       this.#gameStatus = GAME_OVER_STATUS;
     } else if (
       !this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]
@@ -160,6 +206,9 @@ class Model {
     ) {
       this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE] = true;
       this.#numberOpenedCells += 1;
+      if (!this.#timerId) {
+        this.#startTime();
+      }
       if (this.#gameField[rowIndex][cellIndex][NUMBER_CELL_STATE] === 0) {
         this.#openNeighboringCells(rowIndex, cellIndex);
       }
@@ -167,6 +216,7 @@ class Model {
     if (
       (this.#numberMarkedMines === this.#numberMines)
       && (this.#numberOpenedCells + this.#numberMarkedMines) === this.#amountCells) {
+      this.#stopTime();
       this.#gameStatus = WIN_GAME_STATUS;
     }
 
@@ -237,6 +287,7 @@ class Model {
     if (
       (this.#numberMarkedMines === this.#numberMines)
       && (this.#numberOpenedCells + this.#numberMarkedMines) === this.#amountCells) {
+      this.#stopTime();
       this.#gameStatus = WIN_GAME_STATUS;
     }
 

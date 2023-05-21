@@ -55,6 +55,8 @@ class View {
 
   #minesweeperGameStatus = this.createElement({ tag: 'output', classes: ['minesweeper__game-status'] });
 
+  #minesweeperTime = this.createElement({ tag: 'output', classes: ['minesweeper__time'] });
+
   #gameField = this.createElement({ tag: 'canvas', id: this.#GAME_FIELD_ID, classes: ['minesweeper__game-field'] });
 
   #ctx = this.#gameField.getContext('2d');
@@ -62,7 +64,7 @@ class View {
   constructor() {
     this.#minesweeperGameField.prepend(this.#gameField);
     this.#minesweeperContainer.prepend(this.#minesweeperGameField, this.#minesweeperDisplay);
-    this.#minesweeperDisplay.prepend(this.#minesweeperGameStatus);
+    this.#minesweeperDisplay.prepend(this.#minesweeperTime, this.#minesweeperGameStatus);
     this.#minesweeper.append(this.#minesweeperContainer);
     this.#mainContainer.append(this.#minesweeper);
     this.#main.append(this.#mainContainer);
@@ -94,6 +96,22 @@ class View {
     }
 
     return element;
+  }
+
+  showTime(time = {}) {
+    let {
+      minutes,
+      seconds,
+    } = time;
+
+    if (minutes < 10) {
+      minutes = `0${minutes}`;
+    }
+    if (seconds < 10) {
+      seconds = `0${seconds}`;
+    }
+
+    this.#minesweeperTime.textContent = `${minutes}:${seconds}`;
   }
 
   draw(gameField, gameStatus) {
