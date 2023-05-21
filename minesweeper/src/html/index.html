@@ -5,32 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/index.min.css">
-    <title>Document</title>
+    <title>Minesweeper</title>
 </head>
 <body id="root">
-  <div class="wrapper">
-    @@include('./chunks/header.html')
-    @@include('./chunks/navigation.html', {
-      "link": {
-        "path": "https://uk.wikipedia.org/wiki/JavaScript",
-        "name": "java-script"
-      }
-    })
-    <main class="main">
-      <div class="main__container container">
-        <h1 class="main__title">Main page !!</h1>
-        <div class="main__content">
-            <figure class="main__img">
-                <img class="main__img-item img" src="./assets/img/assembly-file-structure.png" alt="assembly file structure">
-                <figcaption>Assembly file structure</figcaption>
-            </figure>
-        </div>
-          @@include('./chunks/java-script.html')
-          @@include('./chunks/python.html')
-      </div>
-    </main>
-    @@include('./chunks/footer.html')
-  </div>
   <script src="../js/main.js"></script>
 </body>
 </html>

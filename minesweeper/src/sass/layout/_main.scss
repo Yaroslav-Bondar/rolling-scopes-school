@@ -1,5 +1,9 @@
 .main {
   &__container {
+    @include flex-center-h;
+    height: 100vh;
+    padding-top: 30px;
+    padding-bottom: 30px;
     background-color: $light-grey;
   }
   &__title {

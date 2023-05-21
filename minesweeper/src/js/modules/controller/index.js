@@ -4,7 +4,7 @@ class Controller {
   #view;
 
   constructor(Model, View) {
-    this.#model = new Model(10, 10, 20);
+    this.#model = new Model(10, 10, 2);
     this.#view = new View();
     this.#view.draw(this.#model.gameField);
     this.#model.bindCellChanged(this.#onCellChanged);

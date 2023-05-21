@@ -1,0 +1,18 @@
+.minesweeper {
+  &__container {
+    display: flex;
+    gap: 20px;
+  }
+  &__game {
+    &-field {
+      margin: 0;
+      border: 2px solid $color-black;
+    }
+    &-status {
+      @include font-montserrat-bold;
+    }
+  }
+  &__display {
+    width: 400px;
+  }
+}

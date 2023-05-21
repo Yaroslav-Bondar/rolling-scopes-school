@@ -10,6 +10,7 @@ const {
   CLOSED_CELL_COLOR,
   INACTIVE_CELL_COLOR,
   AMOUNT_MINE_COLOR,
+  ERROR_CELL_COLOR,
 } = require('../../constants/colors');
 
 const {
@@ -18,12 +19,6 @@ const {
 } = require('../../constants/gameStatus');
 
 class View {
-  #root;
-
-  #gameField;
-
-  #ctx;
-
   #GAME_FIELD_ID = 'game-field';
 
   #GAME_FIELD_FALLBACK_TEXT = 'playing field for the classic minesweeper game';
@@ -42,13 +37,63 @@ class View {
 
   #AMOUNT_MINE_FONT = '20px serif';
 
+  #GAME_OVER_STATUS_TEXT = 'Game over. Try again';
+
+  #root = document.getElementById('root');
+
+  #main = this.createElement({ tag: 'div', classes: ['main'] });
+
+  #mainContainer = this.createElement({ tag: 'div', classes: ['main__container', 'container'] });
+
+  #minesweeper = this.createElement({ tag: 'div', classes: ['minesweeper'] });
+
+  #minesweeperContainer = this.createElement({ tag: 'div', classes: ['minesweeper__container'] });
+
+  #minesweeperGameField = this.createElement({ tag: 'div', classes: ['minesweeper__game'] });
+
+  #minesweeperDisplay = this.createElement({ tag: 'div', classes: ['minesweeper__display'] });
+
+  #minesweeperGameStatus = this.createElement({ tag: 'output', classes: ['minesweeper__game-status'] });
+
+  #gameField = this.createElement({ tag: 'canvas', id: this.#GAME_FIELD_ID, classes: ['minesweeper__game-field'] });
+
+  #ctx = this.#gameField.getContext('2d');
+
   constructor() {
-    this.#root = document.getElementById('root');
-    this.#gameField = document.createElement('canvas');
-    this.#gameField.id = this.#GAME_FIELD_ID;
+    this.#minesweeperGameField.prepend(this.#gameField);
+    this.#minesweeperContainer.prepend(this.#minesweeperGameField, this.#minesweeperDisplay);
+    this.#minesweeperDisplay.prepend(this.#minesweeperGameStatus);
+    this.#minesweeper.append(this.#minesweeperContainer);
+    this.#mainContainer.append(this.#minesweeper);
+    this.#main.append(this.#mainContainer);
     this.#gameField.textContent = this.#GAME_FIELD_FALLBACK_TEXT;
-    this.#ctx = this.#gameField.getContext('2d');
-    this.#root.prepend(this.#gameField);
+    this.#root.prepend(this.#main);
+  }
+
+  createElement(data = {}) {
+    const {
+      tag,
+      id,
+      classes,
+      attributeName,
+      attributeValue,
+    } = data;
+
+    const element = document.createElement(tag);
+
+    if (id) {
+      element.id = id;
+    }
+
+    if (classes) {
+      element.classList.add(...classes);
+    }
+
+    if (attributeName && attributeValue) {
+      element.setAttribute(attributeName, `${attributeValue}`);
+    }
+
+    return element;
   }
 
   draw(gameField, gameStatus) {
@@ -60,34 +105,48 @@ class View {
       row.forEach((cell, cellIndex) => {
         if (gameStatus === GAME_OVER_STATUS) {
           this.#drawGameOver(rowIndex, cellIndex, cell);
-        } else if (gameStatus === WIN_GAME_STATUS) {
-          console.log('WIN !!!');
+          this.removeEventHandler(this.#gameField, 'oncontextmenu');
+          this.removeEventHandler(this.#gameField, 'onclick');
+          this.#minesweeperGameStatus.textContent = this.#GAME_OVER_STATUS_TEXT;
         } else if (cell[OPENED_CELL_STATE]) {
           this.#drawOpenedCell(rowIndex, cellIndex, cell);
         } else if (cell[MARKED_CELL_STATE]) {
           this.#drawImage(rowIndex, cellIndex, this.#MARK_ICON_PATH);
-          this.#drawInactiveCell(rowIndex, cellIndex);
+          this.#drawClosedCell(rowIndex, cellIndex);
         } else {
           this.#drawClosedCell(rowIndex, cellIndex);
+        }
+        if (gameStatus === WIN_GAME_STATUS) {
+          this.removeEventHandler(this.#gameField, 'oncontextmenu');
+          this.removeEventHandler(this.#gameField, 'onclick');
+          this.#minesweeperGameStatus.textContent = 'WIN !!!';
         }
       });
     });
   }
 
   #drawGameOver(rowIndex, cellIndex, cell) {
-    if (!cell[OPENED_CELL_STATE]) {
+    if (!cell[OPENED_CELL_STATE] && !cell[MARKED_CELL_STATE]) {
       this.#drawInactiveCell(rowIndex, cellIndex);
     } else {
       this.#drawOpenedCell(rowIndex, cellIndex, cell);
     }
-    if (cell[MINED_CELL_STATE]) {
-      this.#drawImage(rowIndex, cellIndex, this.#MINE_ICON_PATH);
-      this.#drawInactiveCell(rowIndex, cellIndex);
+    if (cell[MARKED_CELL_STATE]) {
+      this.#drawImage(rowIndex, cellIndex, this.#MARK_ICON_PATH);
+      if (cell[MINED_CELL_STATE]) {
+        this.#drawInactiveCell(rowIndex, cellIndex);
+      } else {
+        this.#drawErrorCell(rowIndex, cellIndex);
+      }
     }
-  }
-
-  #drawInactiveCell(rowIndex, cellIndex) {
-    this.#drawCell(rowIndex, cellIndex, INACTIVE_CELL_COLOR);
+    if (cell[MINED_CELL_STATE] && !cell[MARKED_CELL_STATE]) {
+      this.#drawImage(rowIndex, cellIndex, this.#MINE_ICON_PATH);
+      if (cell[OPENED_CELL_STATE]) {
+        this.#drawErrorCell(rowIndex, cellIndex);
+      } else {
+        this.#drawInactiveCell(rowIndex, cellIndex);
+      }
+    }
   }
 
   #drawCell(rowIndex, cellIndex, bgColor) {
@@ -104,6 +163,14 @@ class View {
       this.#CELL_WIDTH,
       this.#CELL_HEIGHT,
     );
+  }
+
+  #drawErrorCell(rowIndex, cellIndex) {
+    this.#drawCell(rowIndex, cellIndex, ERROR_CELL_COLOR);
+  }
+
+  #drawInactiveCell(rowIndex, cellIndex) {
+    this.#drawCell(rowIndex, cellIndex, INACTIVE_CELL_COLOR);
   }
 
   #drawImage(rowIndex, cellIndex, imagePath) {
@@ -143,15 +210,15 @@ class View {
   }
 
   bindOpenCell(handler) {
-    this.#gameField.addEventListener('click', (event) => {
+    this.#gameField.onclick = (event) => {
       this.#handleClick(event, handler);
-    });
+    };
   }
 
   bindMarkCell(handler) {
-    this.#gameField.addEventListener('contextmenu', (event) => {
+    this.#gameField.oncontextmenu = (event) => {
       this.#handleClick(event, handler);
-    });
+    };
   }
 
   #handleClick(event, handler) {
@@ -161,6 +228,11 @@ class View {
     const rowIndex = Math.floor(y / this.#CELL_HEIGHT);
     const cellIndex = Math.floor(x / this.#CELL_WIDTH);
     handler(rowIndex, cellIndex);
+  }
+
+  removeEventHandler(object, eventName) {
+    const obj = object;
+    obj[eventName] = null;
   }
 }
 

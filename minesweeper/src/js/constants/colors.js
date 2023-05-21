@@ -4,6 +4,8 @@ const CLOSED_CELL_COLOR = 'rgb(153, 153, 153)';
 
 const INACTIVE_CELL_COLOR = 'rgb(68, 68, 68)';
 
+const ERROR_CELL_COLOR = 'tomato';
+
 const AMOUNT_MINE_COLOR = 'black';
 
 module.exports = {
@@ -11,4 +13,5 @@ module.exports = {
   CLOSED_CELL_COLOR,
   INACTIVE_CELL_COLOR,
   AMOUNT_MINE_COLOR,
+  ERROR_CELL_COLOR,
 };

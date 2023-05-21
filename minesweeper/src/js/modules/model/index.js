@@ -139,8 +139,6 @@ class Model {
   }
 
   openCell(rowIndex, cellIndex) {
-    this.#numberOpenedCells += 1;
-
     if (!this.#isGameFieldMined) {
       this.#minePlayingField(rowIndex, cellIndex);
       this.#isGameFieldMined = true;
@@ -149,15 +147,26 @@ class Model {
       this.#numberPlayingField();
       this.#isGameFieldNumbered = true;
     }
-    if (this.#gameField[rowIndex][cellIndex][MINED_CELL_STATE]) {
-      this.#gameStatus = GAME_OVER_STATUS;
-    } else if (!this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]) {
+    if (
+      this.#gameField[rowIndex][cellIndex][MINED_CELL_STATE]
+      && !this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]
+    ) {
       this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE] = true;
+      this.#numberOpenedCells += 1;
+      this.#gameStatus = GAME_OVER_STATUS;
+    } else if (
+      !this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]
+      && !this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]
+    ) {
+      this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE] = true;
+      this.#numberOpenedCells += 1;
       if (this.#gameField[rowIndex][cellIndex][NUMBER_CELL_STATE] === 0) {
         this.#openNeighboringCells(rowIndex, cellIndex);
       }
     }
-    if (this.#numberOpenedCells + this.#numberMarkedMines === this.#amountCells) {
+    if (
+      (this.#numberMarkedMines === this.#numberMines)
+      && (this.#numberOpenedCells + this.#numberMarkedMines) === this.#amountCells) {
       this.#gameStatus = WIN_GAME_STATUS;
     }
 
@@ -183,6 +192,9 @@ class Model {
     ) {
       this.#gameField[neighborRowIndex][neighborCellIndex][OPENED_CELL_STATE] = true;
       this.#numberOpenedCells += 1;
+      if (this.#gameField[neighborRowIndex][neighborCellIndex][MARKED_CELL_STATE]) {
+        this.#gameField[neighborRowIndex][neighborCellIndex][MARKED_CELL_STATE] = false;
+      }
       if (this.#gameField[neighborRowIndex][neighborCellIndex][NUMBER_CELL_STATE] === 0) {
         fn(neighborRowIndex, neighborCellIndex);
       }
@@ -190,6 +202,7 @@ class Model {
   }
 
   markCell(rowIndex, cellIndex) {
+    // TODO: optimize logic
     if (
       !this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]
       && !this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]
@@ -221,7 +234,9 @@ class Model {
       this.#numberMarkedCells -= 1;
       this.#numberMarkedMines -= 1;
     }
-    if (this.#numberOpenedCells + this.#numberMarkedMines === this.#amountCells) {
+    if (
+      (this.#numberMarkedMines === this.#numberMines)
+      && (this.#numberOpenedCells + this.#numberMarkedMines) === this.#amountCells) {
       this.#gameStatus = WIN_GAME_STATUS;
     }
 

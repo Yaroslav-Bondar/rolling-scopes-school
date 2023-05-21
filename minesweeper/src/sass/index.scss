@@ -24,16 +24,8 @@
     './base/helpers';
 // 4. Layout-related sections
 @import
-    './layout/header',
-    './layout/navigation',
-    './layout/footer',
-    './layout/main',
-    './layout/java-script',
-    './layout/python';
+    './layout/main';
     
 // 5. Components
 @import
-    './components/news',
-    './components/game-field';
-
-    
+    './components/minesweeper';
