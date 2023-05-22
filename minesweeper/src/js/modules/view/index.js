@@ -37,8 +37,6 @@ class View {
 
   #AMOUNT_MINE_FONT = '20px serif';
 
-  #GAME_OVER_STATUS_TEXT = 'Game over. Try again';
-
   #root = document.getElementById('root');
 
   #main = this.createElement({ tag: 'div', classes: ['main'] });
@@ -128,6 +126,10 @@ class View {
     this.#minesweeperGameStatus.textContent = message;
   }
 
+  showEndGameStatus(message) {
+    this.#minesweeperGameStatus.textContent = message;
+  }
+
   draw(gameField, gameStatus) {
     const rows = gameField.length;
     const columns = gameField[0].length;
@@ -139,7 +141,6 @@ class View {
           this.#drawGameOver(rowIndex, cellIndex, cell);
           this.removeEventHandler(this.#gameField, 'oncontextmenu');
           this.removeEventHandler(this.#gameField, 'onclick');
-          this.#minesweeperGameStatus.textContent = this.#GAME_OVER_STATUS_TEXT;
         } else if (cell[OPENED_CELL_STATE]) {
           this.#drawOpenedCell(rowIndex, cellIndex, cell);
         } else if (cell[MARKED_CELL_STATE]) {

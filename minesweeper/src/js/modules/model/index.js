@@ -57,6 +57,8 @@ class Model {
 
   #onShowWinStatus;
 
+  #onShowEndGameStatus;
+
   #onCellChanged;
 
   constructor(rows, columns, numberMines) {
@@ -82,6 +84,10 @@ class Model {
 
   bindShowWinStatus(handler) {
     this.#onShowWinStatus = handler;
+  }
+
+  bindShowEndGameStatus(handler) {
+    this.#onShowEndGameStatus = handler;
   }
 
   get time() {
@@ -216,6 +222,7 @@ class Model {
       this.#numberSteps += 1;
       this.#onShowSteps(this.#numberSteps);
     }
+    // game over
     if (
       this.#gameField[rowIndex][cellIndex][MINED_CELL_STATE]
       && !this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]
@@ -224,6 +231,7 @@ class Model {
       this.#numberOpenedCells += 1;
       this.#stopTime();
       this.#gameStatus = GAME_OVER_STATUS;
+      this.#onShowEndGameStatus('Game over. Try again');
     } else if (
       !this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]
       && !this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]
