@@ -126,7 +126,7 @@ class View {
     this.#minesweeperGameStatus.textContent = message;
   }
 
-  showEndGameStatus(message) {
+  showLostGameStatus(message) {
     this.#minesweeperGameStatus.textContent = message;
   }
 

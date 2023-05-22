@@ -12,7 +12,7 @@ class Controller {
     this.#model.bindShowTime(this.#onShowTime);
     this.#model.bindShowSteps(this.#onShowSteps);
     this.#model.bindShowWinStatus(this.#onShowWinStatus);
-    this.#model.bindShowEndGameStatus(this.#onShowEndGameStatus);
+    this.#model.bindShowLostGameStatus(this.#onShowLostGameStatus);
     this.#model.bindCellChanged(this.#onCellChanged);
     this.#view.bindOpenCell(this.#handleOpenCell);
     this.#view.bindMarkCell(this.#handleMarkCell);
@@ -30,8 +30,8 @@ class Controller {
     this.#view.showWinStatus(message);
   };
 
-  #onShowEndGameStatus = (message) => {
-    this.#view.showEndGameStatus(message);
+  #onShowLostGameStatus = (message) => {
+    this.#view.showLostGameStatus(message);
   };
 
   #onCellChanged = (gameField, isGameOver) => {

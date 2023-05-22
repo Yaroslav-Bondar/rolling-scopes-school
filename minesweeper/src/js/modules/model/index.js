@@ -57,7 +57,7 @@ class Model {
 
   #onShowWinStatus;
 
-  #onShowEndGameStatus;
+  #onShowLostGameStatus;
 
   #onCellChanged;
 
@@ -86,8 +86,8 @@ class Model {
     this.#onShowWinStatus = handler;
   }
 
-  bindShowEndGameStatus(handler) {
-    this.#onShowEndGameStatus = handler;
+  bindShowLostGameStatus(handler) {
+    this.#onShowLostGameStatus = handler;
   }
 
   get time() {
@@ -231,7 +231,7 @@ class Model {
       this.#numberOpenedCells += 1;
       this.#stopTime();
       this.#gameStatus = GAME_OVER_STATUS;
-      this.#onShowEndGameStatus('Game over. Try again');
+      this.#onShowLostGameStatus('Game over. Try again');
     } else if (
       !this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]
       && !this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]
