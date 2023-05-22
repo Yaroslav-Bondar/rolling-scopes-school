@@ -125,6 +125,12 @@ class View {
     this.#minesweeperGameStatus.textContent = message;
   }
 
+  handleEndGame() {
+    this.removeEventHandler(this.#gameField, 'oncontextmenu');
+    this.removeEventHandler(this.#gameField, 'onclick');
+  }
+
+  // TODO: move the passing of the gameField parameter to the constructor
   draw(gameField) {
     const rows = gameField.length;
     const columns = gameField[0].length;
@@ -132,12 +138,6 @@ class View {
     this.#gameField.height = this.#CELL_HEIGHT * rows;
     gameField.forEach((row, rowIndex) => {
       row.forEach((cell, cellIndex) => {
-        // if (cell[OPENED_CELL_STATE] && cell[MINED_CELL_STATE]) {
-        // if (gameStatus === GAME_OVER_STATUS) {
-        // this.#drawLostGame(rowIndex, cellIndex, gameField);
-        // this.removeEventHandler(this.#gameField, 'oncontextmenu');
-        // this.removeEventHandler(this.#gameField, 'onclick');
-        // } else
         if (cell[OPENED_CELL_STATE]) {
           this.#drawOpenedCell(rowIndex, cellIndex, cell);
         } else if (cell[MARKED_CELL_STATE]) {
@@ -146,10 +146,6 @@ class View {
         } else {
           this.#drawClosedCell(rowIndex, cellIndex);
         }
-        // if (gameStatus === WIN_GAME_STATUS) {
-        //   this.removeEventHandler(this.#gameField, 'oncontextmenu');
-        //   this.removeEventHandler(this.#gameField, 'onclick');
-        // }
       });
     });
   }

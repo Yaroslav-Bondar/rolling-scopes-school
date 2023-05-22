@@ -60,6 +60,8 @@ class Model {
 
   #onDrawLostGame;
 
+  #onHandleEndGame;
+
   #onCellChanged;
 
   constructor(rows, columns, numberMines) {
@@ -93,6 +95,10 @@ class Model {
 
   bindDrawLostGame(handler) {
     this.#onDrawLostGame = handler;
+  }
+
+  bindHandleEndGame(handler) {
+    this.#onHandleEndGame = handler;
   }
 
   get time() {
@@ -219,10 +225,12 @@ class Model {
       this.#minePlayingField(rowIndex, cellIndex);
       this.#isGameFieldMined = true;
     }
+
     if (!this.#isGameFieldNumbered) {
       this.#numberPlayingField();
       this.#isGameFieldNumbered = true;
     }
+
     if (!this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]) {
       this.#numberSteps += 1;
       this.#onShowSteps(this.#numberSteps);
@@ -238,6 +246,7 @@ class Model {
       this.#gameStatus = this.#GAME_LOST_STATUS;
       this.#onDrawLostGame(this.#gameField);
       this.#onShowLostGameStatus('Game over. Try again');
+      this.#onHandleEndGame();
     } else if (
       !this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]
       && !this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]
@@ -261,7 +270,9 @@ class Model {
         `Win! You found all the mines in ${this.#time.minutes} minutes 
         ${this.#time.seconds} seconds and ${this.#numberSteps} moves!`,
       );
+      this.#onHandleEndGame();
     }
+
     if (this.#gameStatus !== this.#GAME_LOST_STATUS) {
       this.#onCellChanged(this.#gameField);
     }
