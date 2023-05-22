@@ -37,6 +37,8 @@ class Model {
 
   #numberOpenedCells = 0;
 
+  #numberSteps = 0;
+
   #time = {
     minutes: 0,
     seconds: 0,
@@ -50,6 +52,8 @@ class Model {
   };
 
   #onShowTime;
+
+  #onShowSteps;
 
   #onCellChanged;
 
@@ -66,12 +70,20 @@ class Model {
     this.#onCellChanged = handler;
   }
 
+  bindShowSteps(handler) {
+    this.#onShowSteps = handler;
+  }
+
   bindShowTime(handler) {
     this.#onShowTime = handler;
   }
 
   get time() {
     return this.#time;
+  }
+
+  get steps() {
+    return this.#numberSteps;
   }
 
   #startTime() {
@@ -192,6 +204,10 @@ class Model {
       this.#numberPlayingField();
       this.#isGameFieldNumbered = true;
     }
+    if (!this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]) {
+      this.#numberSteps += 1;
+      this.#onShowSteps(this.#numberSteps);
+    }
     if (
       this.#gameField[rowIndex][cellIndex][MINED_CELL_STATE]
       && !this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]
@@ -253,6 +269,10 @@ class Model {
 
   markCell(rowIndex, cellIndex) {
     // TODO: optimize logic
+    if (!this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]) {
+      this.#numberSteps += 1;
+      this.#onShowSteps(this.#numberSteps);
+    }
     if (
       !this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]
       && !this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]

@@ -19,7 +19,8 @@
     flex-flow: column;
     width: 400px;
   }
-  &__time {
+  &__time,
+  &__steps {
     @include font-montserrat-medium;
   }
 }

@@ -8,7 +8,9 @@ class Controller {
     this.#view = new View();
     this.#view.draw(this.#model.gameField);
     this.#onShowTime(this.#model.time);
+    this.#onShowSteps(this.#model.steps);
     this.#model.bindShowTime(this.#onShowTime);
+    this.#model.bindShowSteps(this.#onShowSteps);
     this.#model.bindCellChanged(this.#onCellChanged);
     this.#view.bindOpenCell(this.#handleOpenCell);
     this.#view.bindMarkCell(this.#handleMarkCell);
@@ -16,6 +18,10 @@ class Controller {
 
   #onShowTime = (time) => {
     this.#view.showTime(time);
+  };
+
+  #onShowSteps = (steps) => {
+    this.#view.showSteps(steps);
   };
 
   #onCellChanged = (gameField, isGameOver) => {
