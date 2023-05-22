@@ -110,11 +110,11 @@ class View {
       seconds = `0${seconds}`;
     }
 
-    this.#minesweeperTime.textContent = `${minutes}:${seconds}`;
+    this.#minesweeperTime.textContent = `Time: ${minutes}:${seconds}`;
   }
 
   showSteps(steps) {
-    this.#minesweeperSteps.textContent = steps;
+    this.#minesweeperSteps.textContent = `Steps: ${steps}`;
   }
 
   showWinStatus(message) {

@@ -4,7 +4,7 @@ class Controller {
   #view;
 
   constructor(Model, View) {
-    this.#model = new Model(10, 10, 2);
+    this.#model = new Model(10, 10, 10);
     this.#view = new View();
     this.#view.draw(this.#model.gameField);
     this.#onShowTime(this.#model.time);
