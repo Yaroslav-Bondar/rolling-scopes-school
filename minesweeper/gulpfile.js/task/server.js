@@ -1,10 +1,10 @@
-// server update 
+// server update
 const server = () => {
-    $.browserSync.init({
-        server: {
-            baseDir: $.path.root,
-        }
-    });
-}
+  $.browserSync.init({
+    server: {
+      baseDir: $.path.root,
+    },
+  });
+};
 
 module.exports = server;
