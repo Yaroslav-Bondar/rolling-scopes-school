@@ -11,6 +11,7 @@ class Controller {
     this.#onShowSteps(this.#model.steps);
     this.#model.bindShowTime(this.#onShowTime);
     this.#model.bindShowSteps(this.#onShowSteps);
+    this.#model.bindShowWinStatus(this.#onShowWinStatus);
     this.#model.bindCellChanged(this.#onCellChanged);
     this.#view.bindOpenCell(this.#handleOpenCell);
     this.#view.bindMarkCell(this.#handleMarkCell);
@@ -22,6 +23,10 @@ class Controller {
 
   #onShowSteps = (steps) => {
     this.#view.showSteps(steps);
+  };
+
+  #onShowWinStatus = (message) => {
+    this.#view.showWinStatus(message);
   };
 
   #onCellChanged = (gameField, isGameOver) => {

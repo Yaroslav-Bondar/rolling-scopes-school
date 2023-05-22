@@ -124,6 +124,10 @@ class View {
     this.#minesweeperSteps.textContent = steps;
   }
 
+  showWinStatus(message) {
+    this.#minesweeperGameStatus.textContent = message;
+  }
+
   draw(gameField, gameStatus) {
     const rows = gameField.length;
     const columns = gameField[0].length;
@@ -147,7 +151,6 @@ class View {
         if (gameStatus === WIN_GAME_STATUS) {
           this.removeEventHandler(this.#gameField, 'oncontextmenu');
           this.removeEventHandler(this.#gameField, 'onclick');
-          this.#minesweeperGameStatus.textContent = 'WIN !!!';
         }
       });
     });

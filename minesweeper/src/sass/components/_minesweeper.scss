@@ -18,6 +18,7 @@
     @include flex-center-v;
     flex-flow: column;
     width: 400px;
+    text-align: center;
   }
   &__time,
   &__steps {

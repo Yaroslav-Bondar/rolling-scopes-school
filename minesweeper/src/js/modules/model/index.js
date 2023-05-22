@@ -55,6 +55,8 @@ class Model {
 
   #onShowSteps;
 
+  #onShowWinStatus;
+
   #onCellChanged;
 
   constructor(rows, columns, numberMines) {
@@ -76,6 +78,10 @@ class Model {
 
   bindShowTime(handler) {
     this.#onShowTime = handler;
+  }
+
+  bindShowWinStatus(handler) {
+    this.#onShowWinStatus = handler;
   }
 
   get time() {
@@ -102,6 +108,8 @@ class Model {
         minutes,
         seconds: currentSecond,
       };
+
+      this.#time = { ...time };
 
       this.#onShowTime(time);
     }
@@ -229,11 +237,16 @@ class Model {
         this.#openNeighboringCells(rowIndex, cellIndex);
       }
     }
+    // win
     if (
       (this.#numberMarkedMines === this.#numberMines)
       && (this.#numberOpenedCells + this.#numberMarkedMines) === this.#amountCells) {
       this.#stopTime();
       this.#gameStatus = WIN_GAME_STATUS;
+      this.#onShowWinStatus(
+        `Win! You found all the mines in ${this.#time.minutes} minutes 
+        ${this.#time.seconds} seconds and ${this.#numberSteps} moves!`,
+      );
     }
 
     this.#onCellChanged(this.#gameField, this.#gameStatus);
@@ -309,6 +322,10 @@ class Model {
       && (this.#numberOpenedCells + this.#numberMarkedMines) === this.#amountCells) {
       this.#stopTime();
       this.#gameStatus = WIN_GAME_STATUS;
+      this.#onShowWinStatus(
+        `Win! You found all the mines in ${this.#time.minutes} minutes 
+        ${this.#time.seconds} seconds and ${this.#numberSteps} moves!`,
+      );
     }
 
     this.#onCellChanged(this.#gameField, this.#gameStatus);
