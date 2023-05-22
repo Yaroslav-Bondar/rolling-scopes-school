@@ -13,11 +13,6 @@ const {
   ERROR_CELL_COLOR,
 } = require('../../constants/colors');
 
-const {
-  WIN_GAME_STATUS,
-  GAME_OVER_STATUS,
-} = require('../../constants/gameStatus');
-
 class View {
   #GAME_FIELD_ID = 'game-field';
 
@@ -130,18 +125,20 @@ class View {
     this.#minesweeperGameStatus.textContent = message;
   }
 
-  draw(gameField, gameStatus) {
+  draw(gameField) {
     const rows = gameField.length;
     const columns = gameField[0].length;
     this.#gameField.width = this.#CELL_WIDTH * columns;
     this.#gameField.height = this.#CELL_HEIGHT * rows;
     gameField.forEach((row, rowIndex) => {
       row.forEach((cell, cellIndex) => {
-        if (gameStatus === GAME_OVER_STATUS) {
-          this.#drawGameOver(rowIndex, cellIndex, cell);
-          this.removeEventHandler(this.#gameField, 'oncontextmenu');
-          this.removeEventHandler(this.#gameField, 'onclick');
-        } else if (cell[OPENED_CELL_STATE]) {
+        // if (cell[OPENED_CELL_STATE] && cell[MINED_CELL_STATE]) {
+        // if (gameStatus === GAME_OVER_STATUS) {
+        // this.#drawLostGame(rowIndex, cellIndex, gameField);
+        // this.removeEventHandler(this.#gameField, 'oncontextmenu');
+        // this.removeEventHandler(this.#gameField, 'onclick');
+        // } else
+        if (cell[OPENED_CELL_STATE]) {
           this.#drawOpenedCell(rowIndex, cellIndex, cell);
         } else if (cell[MARKED_CELL_STATE]) {
           this.#drawImage(rowIndex, cellIndex, this.#MARK_ICON_PATH);
@@ -149,36 +146,40 @@ class View {
         } else {
           this.#drawClosedCell(rowIndex, cellIndex);
         }
-        if (gameStatus === WIN_GAME_STATUS) {
-          this.removeEventHandler(this.#gameField, 'oncontextmenu');
-          this.removeEventHandler(this.#gameField, 'onclick');
-        }
+        // if (gameStatus === WIN_GAME_STATUS) {
+        //   this.removeEventHandler(this.#gameField, 'oncontextmenu');
+        //   this.removeEventHandler(this.#gameField, 'onclick');
+        // }
       });
     });
   }
 
-  #drawGameOver(rowIndex, cellIndex, cell) {
-    if (!cell[OPENED_CELL_STATE] && !cell[MARKED_CELL_STATE]) {
-      this.#drawInactiveCell(rowIndex, cellIndex);
-    } else {
-      this.#drawOpenedCell(rowIndex, cellIndex, cell);
-    }
-    if (cell[MARKED_CELL_STATE]) {
-      this.#drawImage(rowIndex, cellIndex, this.#MARK_ICON_PATH);
-      if (cell[MINED_CELL_STATE]) {
-        this.#drawInactiveCell(rowIndex, cellIndex);
-      } else {
-        this.#drawErrorCell(rowIndex, cellIndex);
-      }
-    }
-    if (cell[MINED_CELL_STATE] && !cell[MARKED_CELL_STATE]) {
-      this.#drawImage(rowIndex, cellIndex, this.#MINE_ICON_PATH);
-      if (cell[OPENED_CELL_STATE]) {
-        this.#drawErrorCell(rowIndex, cellIndex);
-      } else {
-        this.#drawInactiveCell(rowIndex, cellIndex);
-      }
-    }
+  drawLostGame(gameField) {
+    gameField.forEach((row, rowIndex) => {
+      row.forEach((cell, cellIndex) => {
+        if (!cell[OPENED_CELL_STATE] && !cell[MARKED_CELL_STATE]) {
+          this.#drawInactiveCell(rowIndex, cellIndex);
+        } else {
+          this.#drawOpenedCell(rowIndex, cellIndex, cell);
+        }
+        if (cell[MARKED_CELL_STATE]) {
+          this.#drawImage(rowIndex, cellIndex, this.#MARK_ICON_PATH);
+          if (cell[MINED_CELL_STATE]) {
+            this.#drawInactiveCell(rowIndex, cellIndex);
+          } else {
+            this.#drawErrorCell(rowIndex, cellIndex);
+          }
+        }
+        if (cell[MINED_CELL_STATE] && !cell[MARKED_CELL_STATE]) {
+          this.#drawImage(rowIndex, cellIndex, this.#MINE_ICON_PATH);
+          if (cell[OPENED_CELL_STATE]) {
+            this.#drawErrorCell(rowIndex, cellIndex);
+          } else {
+            this.#drawInactiveCell(rowIndex, cellIndex);
+          }
+        }
+      });
+    });
   }
 
   #drawCell(rowIndex, cellIndex, bgColor) {

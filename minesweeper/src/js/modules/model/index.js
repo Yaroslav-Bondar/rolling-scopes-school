@@ -7,11 +7,6 @@ const {
   NUMBER_CELL_STATE,
 } = require('../../constants/cellStates');
 
-const {
-  WIN_GAME_STATUS,
-  GAME_OVER_STATUS,
-} = require('../../constants/gameStatus');
-
 class Model {
   #gameField = [];
 
@@ -22,6 +17,10 @@ class Model {
   #timerId;
 
   #gameStatus;
+
+  #WIN_GAME_STATUS = 'win';
+
+  #GAME_LOST_STATUS = 'gameOver';
 
   #rows;
 
@@ -59,6 +58,8 @@ class Model {
 
   #onShowLostGameStatus;
 
+  #onDrawLostGame;
+
   #onCellChanged;
 
   constructor(rows, columns, numberMines) {
@@ -88,6 +89,10 @@ class Model {
 
   bindShowLostGameStatus(handler) {
     this.#onShowLostGameStatus = handler;
+  }
+
+  bindDrawLostGame(handler) {
+    this.#onDrawLostGame = handler;
   }
 
   get time() {
@@ -230,7 +235,8 @@ class Model {
       this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE] = true;
       this.#numberOpenedCells += 1;
       this.#stopTime();
-      this.#gameStatus = GAME_OVER_STATUS;
+      this.#gameStatus = this.#GAME_LOST_STATUS;
+      this.#onDrawLostGame(this.#gameField);
       this.#onShowLostGameStatus('Game over. Try again');
     } else if (
       !this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]
@@ -250,14 +256,15 @@ class Model {
       (this.#numberMarkedMines === this.#numberMines)
       && (this.#numberOpenedCells + this.#numberMarkedMines) === this.#amountCells) {
       this.#stopTime();
-      this.#gameStatus = WIN_GAME_STATUS;
+      this.#gameStatus = this.#WIN_GAME_STATUS;
       this.#onShowWinStatus(
         `Win! You found all the mines in ${this.#time.minutes} minutes 
         ${this.#time.seconds} seconds and ${this.#numberSteps} moves!`,
       );
     }
-
-    this.#onCellChanged(this.#gameField, this.#gameStatus);
+    if (this.#gameStatus !== this.#GAME_LOST_STATUS) {
+      this.#onCellChanged(this.#gameField);
+    }
   }
 
   #openNeighboringCells(rowIndex, cellIndex) {
@@ -329,7 +336,7 @@ class Model {
       (this.#numberMarkedMines === this.#numberMines)
       && (this.#numberOpenedCells + this.#numberMarkedMines) === this.#amountCells) {
       this.#stopTime();
-      this.#gameStatus = WIN_GAME_STATUS;
+      this.#gameStatus = this.#WIN_GAME_STATUS;
       this.#onShowWinStatus(
         `Win! You found all the mines in ${this.#time.minutes} minutes 
         ${this.#time.seconds} seconds and ${this.#numberSteps} moves!`,
