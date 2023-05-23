@@ -52,6 +52,10 @@ class View {
 
   #minesweeperSteps = this.createElement({ tag: 'output', classes: ['minesweeper__steps'] });
 
+  #minesweeperFlags = this.createElement({ tag: 'output', classes: ['minesweeper__flags'] });
+
+  #minesweeperMines = this.createElement({ tag: 'output', classes: ['minesweeper__mines'] });
+
   #gameField = this.createElement({ tag: 'canvas', id: this.#GAME_FIELD_ID, classes: ['minesweeper__game-field'] });
 
   #ctx = this.#gameField.getContext('2d');
@@ -62,6 +66,8 @@ class View {
     this.#minesweeperDisplay.prepend(
       this.#minesweeperTime,
       this.#minesweeperSteps,
+      this.#minesweeperFlags,
+      this.#minesweeperMines,
       this.#minesweeperGameStatus,
     );
     this.#minesweeper.append(this.#minesweeperContainer);
@@ -115,6 +121,14 @@ class View {
 
   showSteps(steps) {
     this.#minesweeperSteps.textContent = `Steps: ${steps}`;
+  }
+
+  showNumberFlags(flags) {
+    this.#minesweeperFlags.textContent = `Flags: ${flags}`;
+  }
+
+  showNumberRemainingMines(mines) {
+    this.#minesweeperMines.textContent = `Remaining mines: ${mines}`;
   }
 
   showWinStatus(message) {

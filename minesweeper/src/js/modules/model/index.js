@@ -54,6 +54,10 @@ class Model {
 
   #onShowSteps;
 
+  #onShowNumberFlags;
+
+  #onShowNumberRemainingMines;
+
   #onShowWinStatus;
 
   #onShowLostGameStatus;
@@ -85,6 +89,14 @@ class Model {
     this.#onShowTime = handler;
   }
 
+  bindShowNumberFlags(handler) {
+    this.#onShowNumberFlags = handler;
+  }
+
+  bindShowNumberRemainingMines(handler) {
+    this.#onShowNumberRemainingMines = handler;
+  }
+
   bindShowWinStatus(handler) {
     this.#onShowWinStatus = handler;
   }
@@ -107,6 +119,18 @@ class Model {
 
   get steps() {
     return this.#numberSteps;
+  }
+
+  get numberMarkedCells() {
+    return this.#numberMarkedCells;
+  }
+
+  get numberMines() {
+    return this.#numberMines;
+  }
+
+  get gameField() {
+    return this.#gameField;
   }
 
   #startTime() {
@@ -146,10 +170,6 @@ class Model {
         this.#gameField[row][cell] = { ...this.#CELL_DEFAULT_STATE };
       }
     }
-  }
-
-  get gameField() {
-    return this.#gameField;
   }
 
   #minePlayingField(nonIncludedRow, nonIncludedCell) {
@@ -354,6 +374,8 @@ class Model {
       );
     }
 
+    this.#onShowNumberFlags(this.#numberMarkedCells);
+    this.#onShowNumberRemainingMines(this.#numberMines - this.#numberMarkedMines);
     this.#onCellChanged(this.#gameField, this.#gameStatus);
   }
 }

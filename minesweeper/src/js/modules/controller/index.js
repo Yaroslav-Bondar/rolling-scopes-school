@@ -9,10 +9,14 @@ class Controller {
     this.#view.draw(this.#model.gameField);
     this.#onShowTime(this.#model.time);
     this.#onShowSteps(this.#model.steps);
+    this.#onShowNumberFlags(this.#model.numberMarkedCells);
+    this.#onShowNumberRemainingMines(this.#model.numberMines);
     this.#model.bindShowTime(this.#onShowTime);
     this.#model.bindShowSteps(this.#onShowSteps);
     this.#model.bindShowWinStatus(this.#onShowWinStatus);
     this.#model.bindShowLostGameStatus(this.#onShowLostGameStatus);
+    this.#model.bindShowNumberFlags(this.#onShowNumberFlags);
+    this.#model.bindShowNumberRemainingMines(this.#onShowNumberRemainingMines);
     this.#model.bindDrawLostGame(this.#onDrawLostGame);
     this.#model.bindCellChanged(this.#onCellChanged);
     this.#model.bindHandleEndGame(this.#onHandleEndGame);
@@ -26,6 +30,14 @@ class Controller {
 
   #onShowSteps = (steps) => {
     this.#view.showSteps(steps);
+  };
+
+  #onShowNumberFlags = (flags) => {
+    this.#view.showNumberFlags(flags);
+  };
+
+  #onShowNumberRemainingMines = (mines) => {
+    this.#view.showNumberRemainingMines(mines);
   };
 
   #onShowWinStatus = (message) => {
