@@ -267,7 +267,7 @@ class Model {
       this.#onDrawLostGame(this.#gameField);
       this.#onShowLostGameStatus('Game over. Try again');
       this.#onHandleEndGame();
-    } else if (
+    } else if ( // open cell 
       !this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]
       && !this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]
     ) {
@@ -279,6 +279,7 @@ class Model {
       if (this.#gameField[rowIndex][cellIndex][NUMBER_CELL_STATE] === 0) {
         this.#openNeighboringCells(rowIndex, cellIndex);
       }
+      this.#onCellChanged(this.#gameField);
     }
     // win
     if (
@@ -291,10 +292,6 @@ class Model {
         ${this.#time.seconds} seconds and ${this.#numberSteps} moves!`,
       );
       this.#onHandleEndGame();
-    }
-
-    if (this.#gameStatus !== this.#GAME_LOST_STATUS) {
-      this.#onCellChanged(this.#gameField);
     }
   }
 
@@ -376,7 +373,7 @@ class Model {
 
     this.#onShowNumberFlags(this.#numberMarkedCells);
     this.#onShowNumberRemainingMines(this.#numberMines - this.#numberMarkedMines);
-    this.#onCellChanged(this.#gameField, this.#gameStatus);
+    this.#onCellChanged(this.#gameField);
   }
 }
 

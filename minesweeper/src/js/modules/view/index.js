@@ -56,13 +56,78 @@ class View {
 
   #minesweeperMines = this.createElement({ tag: 'output', classes: ['minesweeper__mines'] });
 
+  #minesweeperModes = this.createElement({ tag: 'form', classes: ['minesweeper__modes'] });
+
+  #minesweeperLevels = this.createElement({ tag: 'section', classes: ['minesweeper__levels'] });
+
+  #minesweeperDimensions = this.createElement({ tag: 'fieldset', classes: ['minesweeper__dimensions'] });
+
+  #minesweeperEasyLabel = this.createElement({ tag: 'label', classes: ['minesweeper__easy-label'] });
+
+  #minesweeperEasy = this.createElement({ tag: 'input', classes: ['minesweeper__easy'] });
+
+  #minesweeperMediumLabel = this.createElement({ tag: 'label', classes: ['minesweeper__medium-label'] });
+
+  #minesweeperMedium = this.createElement({ tag: 'input', classes: ['minesweeper__medium'] });
+
+  #minesweeperHardLabel = this.createElement({ tag: 'label', classes: ['minesweeper__hard-label'] });
+
+  #minesweeperHard = this.createElement({ tag: 'input', classes: ['minesweeper__hard'] });
+
+  #minesweeperChoiceNumberMines = this.createElement({ tag: 'p', classes: ['minesweeper__choice-number-mines'] });
+
+  #minesweeperNumberMinesLabel = this.createElement({ tag: 'label', classes: ['minesweeper__number-mines-label'] });
+
+  #minesweeperNumberMines = this.createElement({ tag: 'input', classes: ['minesweeper__number-mines'] });
+
   #gameField = this.createElement({ tag: 'canvas', id: this.#GAME_FIELD_ID, classes: ['minesweeper__game-field'] });
 
   #ctx = this.#gameField.getContext('2d');
 
   constructor() {
     this.#minesweeperGameField.prepend(this.#gameField);
-    this.#minesweeperContainer.prepend(this.#minesweeperGameField, this.#minesweeperDisplay);
+    this.#minesweeperContainer.prepend(
+      this.#minesweeperModes,
+      this.#minesweeperGameField,
+      this.#minesweeperDisplay,
+    );
+    this.#minesweeperEasy.type = 'radio';
+    this.#minesweeperEasy.name = 'size';
+    this.#minesweeperEasy.value = 'easy';
+    this.#minesweeperEasyLabel.textContent = 'Easy 10 x 10';
+    this.#minesweeperMedium.type = 'radio';
+    this.#minesweeperMedium.name = 'size';
+    this.#minesweeperMedium.value = 'medium';
+    this.#minesweeperMediumLabel.textContent = 'Medium 15 x 15';
+    this.#minesweeperHard.type = 'radio';
+    this.#minesweeperHard.name = 'size';
+    this.#minesweeperHard.value = 'hard';
+    this.#minesweeperHardLabel.textContent = 'Hard 25 x 25';
+    this.#minesweeperEasyLabel.prepend(this.#minesweeperEasy);
+    this.#minesweeperMediumLabel.prepend(this.#minesweeperMedium);
+    this.#minesweeperHardLabel.prepend(this.#minesweeperHard);
+    this.#minesweeperNumberMines.type = 'number';
+    this.#minesweeperNumberMines.min = 10;
+    this.#minesweeperNumberMines.max = 99;
+    this.#minesweeperNumberMines.name = 'number-mines';
+    this.#minesweeperChoiceNumberMines.prepend(this.#minesweeperNumberMinesLabel);
+    this.#minesweeperNumberMinesLabel.textContent = 'Number of mines';
+    this.#minesweeperNumberMinesLabel.prepend(this.#minesweeperNumberMines);
+    this.#minesweeperDimensions.prepend(
+      this.createList(
+        [
+          this.#minesweeperHardLabel,
+          this.#minesweeperMediumLabel,
+          this.#minesweeperEasyLabel,
+        ],
+        'minesweeper__dimensions-list',
+      ),
+    );
+    this.#minesweeperLevels.prepend(
+      this.#minesweeperDimensions,
+      this.#minesweeperChoiceNumberMines,
+    );
+    this.#minesweeperModes.prepend(this.#minesweeperLevels);
     this.#minesweeperDisplay.prepend(
       this.#minesweeperTime,
       this.#minesweeperSteps,
@@ -86,14 +151,27 @@ class View {
       attributeValue,
     } = data;
 
+    if (!Array.isArray(classes)) {
+      throw new Error('Classes must be listed in an array.');
+    }
+
     const element = document.createElement(tag);
 
     if (id) {
       element.id = id;
     }
 
-    if (classes) {
-      element.classList.add(...classes);
+    function addClass(className) {
+      if (typeof className !== 'string') {
+        throw new Error('Class name must be a string.');
+      }
+      if (className) {
+        element.classList.add(className);
+      }
+    }
+
+    if (classes.length) {
+      classes.forEach(addClass);
     }
 
     if (attributeName && attributeValue) {
@@ -101,6 +179,20 @@ class View {
     }
 
     return element;
+  }
+
+  createList(items, listClassName, elementClassName) {
+    const ul = this.createElement({ tag: 'ul', classes: [listClassName ? `${listClassName}` : ''] });
+
+    function iterate(item) {
+      const li = this.createElement({ tag: 'li', classes: [elementClassName ? `${elementClassName}` : ''] });
+      li.append(item);
+      ul.prepend(li);
+    }
+
+    items.forEach(iterate.bind(this));
+
+    return ul;
   }
 
   showTime(time = {}) {

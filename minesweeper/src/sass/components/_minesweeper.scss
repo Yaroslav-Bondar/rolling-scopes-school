@@ -24,4 +24,12 @@
   &__steps {
     @include font-montserrat-medium;
   }
+  &__dimensions-list {
+    list-style-type: none;
+  }
+  &__easy,
+  &__medium,
+  &__hard {
+    margin-right: 10px;
+  }
 }

@@ -56,8 +56,8 @@ class Controller {
     this.#view.handleEndGame();
   };
 
-  #onCellChanged = (gameField, isGameOver) => {
-    this.#view.draw(gameField, isGameOver);
+  #onCellChanged = (gameField) => {
+    this.#view.draw(gameField);
   };
 
   #handleOpenCell = (rowIndex, cellIndex) => {
