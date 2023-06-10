@@ -267,7 +267,7 @@ class Model {
       this.#onDrawLostGame(this.#gameField);
       this.#onShowLostGameStatus('Game over. Try again');
       this.#onHandleEndGame();
-    } else if ( // open cell 
+    } else if ( // open cell
       !this.#gameField[rowIndex][cellIndex][OPENED_CELL_STATE]
       && !this.#gameField[rowIndex][cellIndex][MARKED_CELL_STATE]
     ) {
