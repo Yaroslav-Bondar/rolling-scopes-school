@@ -1,0 +1,7 @@
+export const LINE_NUMBERS_CLASSNAME = 'line-numbers'
+export const SELECTOR_FORM_ID = 'selector-form'
+export const EDITOR_HEADER_CLASSNAME = 'editor__header'
+export const VIEWER_HEADER_CLASSNAME = 'viewer__header'
+export const EDITOR_LINES_CLASSNAME = 'editor__lines'
+export const VIEWER_LINES_CLASSNAME = 'viewer__lines'
+export const SELECTOR_INPUT_ID = 'selector-input'

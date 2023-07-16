@@ -1,0 +1,18 @@
+[
+  {
+      "name": "first post about python",
+      "body": "first news text"
+  },
+  {
+      "name": "second post about python",
+      "body": "text of the second news"
+  },
+  {
+      "name": "third post about python",
+      "body": "third news text"
+  },
+  {
+      "name": "fourth post about python",
+      "body": "text of the fourth news"
+  }
+]

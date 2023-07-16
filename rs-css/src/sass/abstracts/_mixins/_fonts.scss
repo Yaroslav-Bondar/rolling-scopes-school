@@ -1,0 +1,38 @@
+// mixins for fonts
+@mixin font-montserrat-black {
+    font-weight: 900;
+    font-style: normal;
+}
+
+@mixin font-montserrat-extrabold {
+    font-weight: 800;
+    font-style: normal;
+}
+
+@mixin font-montserrat-bold {
+    font-family: 'montserrat-bold', sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+@mixin font-montserrat-semibold {
+    font-weight: 600;
+    font-style: normal;
+}
+
+@mixin font-montserrat-medium {
+    font-family: 'montserrat-medium', sans-serif;
+    font-weight: 500;
+    font-style: normal;
+}
+
+@mixin font-montserrat-regular {
+    font-family: 'montserrat-regular', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+@mixin font-montserrat-light {
+    font-weight: 300;
+    font-style: normal;
+}

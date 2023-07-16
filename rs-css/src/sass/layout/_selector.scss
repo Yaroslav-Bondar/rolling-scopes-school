@@ -1,0 +1,26 @@
+.selector {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: 'css submit';
+  grid-column-gap: 10px;  
+
+  &__css {
+    grid-area: css;
+    &-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      background-color: $color-node;
+      color: $light-grey;
+    }
+  }
+  &__submit {
+    grid-area: submit;
+    &-btn {
+      padding: 3px 5px;
+      background-color: transparent;
+      color: $color-wheat;
+    }
+  }
+
+}

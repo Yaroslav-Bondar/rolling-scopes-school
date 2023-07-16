@@ -1,0 +1,6 @@
+{
+ "0": {
+   "html": "<div>&lt;div class=\"table\"&gt;<div class=\"\">&lt;plate /&gt;</div><div class=\"\">&lt;plate /&gt;</div>&lt;/div&gt;</div>",
+   "answer": "plate"
+  } 
+}

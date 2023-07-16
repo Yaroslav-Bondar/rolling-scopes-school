@@ -1,0 +1,19 @@
+.editor {
+  &__header {
+    color: $color-wheat;
+    background-color: $dark-grey;
+  }
+  &__body {
+    display: flex;
+  }
+  &__lines {
+    background-color: $mid-grey;
+    width: fit-content;
+  }
+  &__content {
+    flex-basis: 100%;
+    padding: .8rem;
+    background-color: $color-node;
+    color: $light-grey;
+  }
+}

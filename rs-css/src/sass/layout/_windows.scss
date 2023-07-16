@@ -1,0 +1,18 @@
+.windows {
+  &__container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: .5rem;
+    background-color: $color-gray;
+  }
+  &__img {
+    width: 161px;
+    height: 161px;
+  }
+  &__title {
+    color: $text-color;
+  }
+  &__posts {
+    text-align: center;
+  }
+}

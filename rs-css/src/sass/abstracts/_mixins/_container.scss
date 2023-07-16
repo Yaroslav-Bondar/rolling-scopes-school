@@ -1,0 +1,25 @@
+// Wrapper based on max layout width 
+@mixin wrapper {
+    max-width: $wrapper-max;
+    min-width: $wrapper-min;
+    min-height: 100%;
+    margin: 0 auto;
+    overflow-x: hidden;
+}
+
+/**
+ * Main content containers
+ * 1. Make the container full-width with a maximum width
+ * 2. Center it in the viewport
+ * 3. Leave some space on the edges, especially valuable on small screens
+ */
+
+// container
+@mixin container {
+    max-width: $container-max-width; // 1
+    margin-left: auto; // 2
+    margin-right: auto; // 2
+    padding-left: $container-padding; // 3
+    padding-right: $container-padding; // 3
+    width: 100%; // 1
+}

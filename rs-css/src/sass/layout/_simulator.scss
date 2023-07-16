@@ -1,0 +1,22 @@
+.simulator {
+  display: grid;
+  grid-template-areas: 'title title levels'
+                       'table table levels'
+                       'windows windows levels';
+  grid-column-gap: 4rem;
+  &__title {
+    grid-area: title;
+  }
+  &__table {
+    @include flex-center-horizontal;
+    grid-area: table;
+    padding: 2rem 0;
+  }
+  &__windows {
+    grid-area: windows;
+    background-color: $dark-grey;
+  }
+  &__levels {
+    grid-area: levels;
+  }
+}

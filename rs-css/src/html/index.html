@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/app.css">
+  <title>Css fruits</title>
+</head>
+<body>
+  <header class="header">
+    <div class="header__container container">
+      Header
+    </div>
+  </header>
+  <main class="main">
+    <div class="main__container container">
+      <article class="simulator">
+        <h1 class="simulator__title title">
+          Title
+        </h1>
+        <section class="simulator__table table">
+          <div class="table__container"></div>
+        </section>
+        <section class="simulator__windows windows">
+          <div class="windows__container">
+            <div class="windows__editor editor">
+              <div class="editor__header">
+              </div>
+              <div class="editor__body">
+                <div class="editor__lines"></div>
+                <div class="editor__content">
+                  <form id="selector-form" class="selector" action="post">
+                    <section class="selector__css">
+                      <p>
+                        <input
+                          id="selector-input" 
+                          class="selector__css-input" 
+                          type="text" 
+                          name="selector" required
+                          placeholder="Type in a CSS selector"
+                        >
+                      </p>
+                    </section>
+                    <section class="selector__submit">
+                      <p>
+                        <button class="selector__submit-btn" type="submit">Enter</button>
+                      </p>
+                    </section>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="windows__viewer viewer">
+              <div class="viewer__header">
+              </div>
+              <div class="viewer__body">
+                <div class="viewer__lines"></div>
+                <div class="viewer__content">
+                  Viewer content
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <aside class="simulator__levels levels">
+          <div class="levels__container">
+            Levels menu
+          </div>
+        </aside>
+      </article>
+    </div>
+  </main>
+  <footer class="footer">
+  <div class="footer__container container">
+      Footer
+  </div>
+  </footer>
+</body>
+</html>
