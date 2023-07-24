@@ -1,0 +1,8 @@
+# Build / generate output
+dist/
+
+# Dependency directories
+node_modules/
+
+# Other
+tmp/
