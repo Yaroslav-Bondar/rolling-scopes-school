@@ -1,5 +1,4 @@
-import App from './pages/app';
+import initRouter from './router';
+import './components';
 
-const app: App = new App();
-
-app.run();
+initRouter();

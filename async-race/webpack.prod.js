@@ -1,7 +1,7 @@
-const { merge } = require('webpack-merge')
-const common = require('./webpack.common.js')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const path = require('path')
+const { merge } = require('webpack-merge');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require('path');
+const common = require('./webpack.common');
 
 module.exports = merge(common, {
   mode: 'production',
@@ -19,14 +19,15 @@ module.exports = merge(common, {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              // Specifies a custom public path for the external resources like images, files, etc inside CSS. Works like 
+              // Specifies a custom public path for the external resources like images,
+              // files, etc inside CSS. Works like
               // publicPath: path.resolve(__dirname, 'dist', 'css'),
-            }
+            },
           },
           'css-loader',
           'sass-loader',
         ],
       },
-    ]
+    ],
   },
-})
+});
