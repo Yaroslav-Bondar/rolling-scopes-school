@@ -1,17 +1,20 @@
 import { goTo } from '../router';
 import createElement from '../utils/createElement';
 
+enum DataAttributes {
+  Selected = 'data-selected',
+  Text = 'data-text',
+}
+
 class NavLink extends HTMLElement {
   static get observedAttributes(): string[] {
-    return ['selected'];
+    return [DataAttributes.Selected, 'href', DataAttributes.Text];
   }
 
   constructor() {
     super();
-
     const shadow: ShadowRoot = this.attachShadow({ mode: 'open' });
     shadow.innerHTML = '<a></a>';
-
     const style: HTMLStyleElement = createElement({ tag: 'style' }) as HTMLStyleElement;
     style.textContent = `
       a {
@@ -27,59 +30,64 @@ class NavLink extends HTMLElement {
         color: #eee;
       }
     `;
-
     this.addEventListener('click', this.onClick);
     shadow.append(style);
   }
 
-  connectedCallback() {
-    const shadow: ShadowRoot | null = this.shadowRoot;
-    const link: HTMLAnchorElement | null | undefined = shadow?.querySelector('a');
-
-    const href: string | null = this.getAttribute('href');
-    if (href) {
-      link?.setAttribute('href', href);
+  attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
+    if (name === DataAttributes.Selected) {
+      this.setActiveStyle();
     }
-
-    const text: string | null = this.getAttribute('text');
-    if (text && link) {
-      link.textContent = text;
+    if (name === 'href') {
+      this.updateHref(newValue);
+    }
+    if (name === DataAttributes.Text) {
+      this.updateText(newValue);
     }
   }
 
-  attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
-    if (name === 'selected' && newValue === 'true') {
-      this.updateStyle();
-    }
+  get isSelected(): boolean {
+    return this.getAttribute(DataAttributes.Selected) === 'true';
   }
 
   onClick(event: Event): void {
     event.preventDefault();
-    const selected: string | null = this.getAttribute('selected');
-
-    if (selected !== 'true') {
-      const target: HTMLElement | null = event.target as HTMLElement;
-      const path: string | null | undefined = target?.getAttribute('href');
-      if (path) {
-        goTo(path);
-      }
-    }
+    if (this.isSelected) return;
+    const path: string | null = this.getAttribute('href');
+    if (!path) return;
+    goTo(path);
   }
 
-  updateStyle(): void {
+  setActiveStyle(): void {
+    if (!this.isSelected) return;
     const style: HTMLStyleElement | null | undefined = this.shadowRoot?.querySelector('style');
-    if (style) {
-      style.innerHTML = `
-        a {
-          color: red;
-          padding: 5px;
-          margin: 5px 5px 5px 0;
-          background-color: green;
-          text-decoration: none;
-          cursor: default;
-        }
-      `;
-    }
+    if (!style) throw Error('Missing style.');
+    style.innerHTML = `
+      a {
+        color: red;
+        padding: 5px;
+        margin: 5px 5px 5px 0;
+        background-color: green;
+        text-decoration: none;
+        cursor: default;
+      }
+    `;
+  }
+
+  updateHref(value: string): void {
+    if (!value) return;
+    const shadow: ShadowRoot | null = this.shadowRoot;
+    const link: HTMLAnchorElement | null | undefined = shadow?.querySelector('a');
+    if (!link) throw Error('Missing link.');
+    link.setAttribute('href', value);
+  }
+
+  updateText(value: string) {
+    if (!value) return;
+    const shadow: ShadowRoot | null = this.shadowRoot;
+    const link: HTMLAnchorElement | null | undefined = shadow?.querySelector('a');
+    if (!link) throw Error('Missing link.');
+    link.textContent = value;
   }
 }
 

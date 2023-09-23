@@ -1,4 +1,4 @@
 import './main-navigation';
 import './main';
-import './garage';
+import './smartphones';
 import './nav-link';

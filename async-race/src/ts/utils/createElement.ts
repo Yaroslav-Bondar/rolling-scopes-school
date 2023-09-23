@@ -14,27 +14,21 @@ function createElement(data: Data): HTMLElement {
     attributeName,
     attributeValue,
   }: Data = data;
-
   const element: HTMLElement = document.createElement(tag);
-
   if (id?.length) {
     element.id = id;
   }
-
   function addClass(className: string): void {
     if (className.length) {
       element.classList.add(className);
     }
   }
-
   if (classes?.length) {
     classes.forEach(addClass);
   }
-
   if (attributeName?.length && attributeValue?.length) {
     element.setAttribute(attributeName, attributeValue);
   }
-
   return element;
 }
 
