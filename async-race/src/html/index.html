@@ -7,5 +7,66 @@
   <title>Document</title>
 </head>
 <body>
+  <div id="root"></div>
+  <template id="modal-window-template">
+    <style>
+      .modal-window {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        justify-content: center;
+        align-items: center;
+        width: 100vw;
+        height: 100vh;
+        z-index: 999;
+      }
+      .modal-window_opened {
+        display: flex;
+      }
+      .modal-window__background {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        z-index: -1;
+        background-color: rgb(33, 33, 33, 0.5);
+      }
+      .modal-window__container {
+        border-radius: 5px;
+        padding: 10px;
+        font-size: 18px;
+        background-color: silver;
+      }
+      .modal-window__text {
+        margin-bottom: 12px;
+      }
+      .modal-window__title,
+      .modal-window__message {
+        padding: 5px;
+      }
+      .modal-window__buttons {
+        display: flex;
+        justify-content: center;
+        column-gap: 7px;
+      }
+	  </style>
+    <div class="modal-window">
+      <div class="modal-window__background"></div>
+      <div class="modal-window__container">
+        <div class="modal-window__text">
+          <div class="modal-window__title">
+            <slot name="title"></slot>
+          </div>
+          <div class="modal-window__message">
+            <slot name="message"></slot>
+          </div>
+        </div>
+        <div class="modal-window__buttons">
+          <slot name="ok-button"></slot>
+          <slot name="cancel-button"></slot>
+        </div>
+      </div>
+    </div>
+  </template>
 </body>
 </html>
