@@ -1,19 +1,18 @@
+interface Attribute {
+  name: string,
+  value: string,
+}
+
 interface Data {
   tag: string;
   id?: string;
   classes?: string[];
-  attributeName?: string;
-  attributeValue?: string;
+  attrs?: Attribute[];
 }
 
-function createElement(data: Data): HTMLElement {
-  const {
-    tag,
-    id,
-    classes,
-    attributeName,
-    attributeValue,
-  }: Data = data;
+export default ({
+  tag, id, classes, attrs,
+}: Data): HTMLElement => {
   const element: HTMLElement = document.createElement(tag);
   if (id?.length) {
     element.id = id;
@@ -26,10 +25,12 @@ function createElement(data: Data): HTMLElement {
   if (classes?.length) {
     classes.forEach(addClass);
   }
-  if (attributeName?.length && attributeValue?.length) {
-    element.setAttribute(attributeName, attributeValue);
+  if (attrs?.length) {
+    const setAttrs = (attr: Attribute): void => {
+      const { name, value } = attr;
+      element.setAttribute(name, value);
+    };
+    attrs.forEach(setAttrs);
   }
   return element;
-}
-
-export default createElement;
+};

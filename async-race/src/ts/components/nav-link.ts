@@ -1,14 +1,9 @@
 import { goTo } from '../router';
-import createElement from '../utils/createElement';
-
-enum DataAttributes {
-  Selected = 'data-selected',
-  Text = 'data-text',
-}
+import createElement from '../services/createElement';
 
 class NavLink extends HTMLElement {
   static get observedAttributes(): string[] {
-    return [DataAttributes.Selected, 'href', DataAttributes.Text];
+    return [NavLinkDataAttributes.Selected, 'href', NavLinkDataAttributes.Text];
   }
 
   constructor() {
@@ -35,19 +30,19 @@ class NavLink extends HTMLElement {
   }
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
-    if (name === DataAttributes.Selected) {
+    if (name === NavLinkDataAttributes.Selected) {
       this.setActiveStyle();
     }
     if (name === 'href') {
       this.updateHref(newValue);
     }
-    if (name === DataAttributes.Text) {
+    if (name === NavLinkDataAttributes.Text) {
       this.updateText(newValue);
     }
   }
 
   get isSelected(): boolean {
-    return this.getAttribute(DataAttributes.Selected) === 'true';
+    return this.getAttribute(NavLinkDataAttributes.Selected) === 'true';
   }
 
   onClick(event: Event): void {
@@ -61,7 +56,7 @@ class NavLink extends HTMLElement {
   setActiveStyle(): void {
     if (!this.isSelected) return;
     const style: HTMLStyleElement | null | undefined = this.shadowRoot?.querySelector('style');
-    if (!style) throw Error('Missing style.');
+    if (!style) throw new Error('Missing style.');
     style.innerHTML = `
       a {
         color: red;
@@ -78,7 +73,7 @@ class NavLink extends HTMLElement {
     if (!value) return;
     const shadow: ShadowRoot | null = this.shadowRoot;
     const link: HTMLAnchorElement | null | undefined = shadow?.querySelector('a');
-    if (!link) throw Error('Missing link.');
+    if (!link) throw new Error('Missing link.');
     link.setAttribute('href', value);
   }
 
@@ -86,7 +81,7 @@ class NavLink extends HTMLElement {
     if (!value) return;
     const shadow: ShadowRoot | null = this.shadowRoot;
     const link: HTMLAnchorElement | null | undefined = shadow?.querySelector('a');
-    if (!link) throw Error('Missing link.');
+    if (!link) throw new Error('Missing link.');
     link.textContent = value;
   }
 }

@@ -18,6 +18,9 @@ module.exports = {
         '*.tsx',
         '*.d.ts',
       ],
+      rules: {
+        'class-methods-use-this': ['error'],
+      },
       plugins: [
         '@typescript-eslint',
       ],
