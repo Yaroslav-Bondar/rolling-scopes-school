@@ -50,6 +50,8 @@ class MainNavigation extends HTMLElement {
 
   private search: HTMLInputElement;
 
+  private defaultSearchType: SearchTypes = SearchTypes.User;
+
   constructor() {
     super();
     const shadow: ShadowRoot = this.attachShadow({ mode: 'open' });
@@ -98,13 +100,13 @@ class MainNavigation extends HTMLElement {
 
   attributeChangedCallback(name: DataAttributes): void {
     if (name === DataAttributes.SearchType) {
-      this.updateSearchPlaceholder();
+      this.updateSearchPlaceholder(this.searchType);
     }
   }
 
   connectedCallback(): void {
     if (this.searchType === null) {
-      this.updateSearchPlaceholder();
+      this.updateSearchPlaceholder(this.searchType);
     }
   }
 
@@ -112,8 +114,8 @@ class MainNavigation extends HTMLElement {
     return this.getAttribute(DataAttributes.SearchType);
   }
 
-  get isDefaultSearchType(): boolean {
-    return this.searchType === SearchTypes.User || this.searchType === null;
+  isDefaultSearchType(type: string | null): boolean {
+    return type === this.defaultSearchType || type === null;
   }
 
   handleModalWindowOkEvent = (event: Event): void => {
@@ -170,19 +172,18 @@ class MainNavigation extends HTMLElement {
       );
       return;
     }
-    if (this.isDefaultSearchType) {
+    if (this.isDefaultSearchType(this.searchType)) {
       // TODO: render the users page
     } else if (this.searchType === SearchTypes.Post) {
       // TODO: render the posts page
     }
   };
 
-  updateSearchPlaceholder() {
-    const searchInput: HTMLInputElement | null | undefined = this.shadowRoot?.getElementById(`${Ids.SearchInput}`) as HTMLInputElement;
-    if (this.isDefaultSearchType) {
-      searchInput?.setAttribute('placeholder', 'Search user...');
-    } else if (this.searchType === SearchTypes.Post) {
-      searchInput?.setAttribute('placeholder', 'Search post...');
+  updateSearchPlaceholder(type: string | null) {
+    if (this.isDefaultSearchType(type)) {
+      this.search.setAttribute('placeholder', 'Search user...');
+    } else if (type === SearchTypes.Post) {
+      this.search.setAttribute('placeholder', 'Search post...');
     } else {
       throw new Error('Wrong search type.');
     }

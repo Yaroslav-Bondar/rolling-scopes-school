@@ -6,6 +6,11 @@ enum WindowTypes {
   Warning = ModalWindowTypes.Warning,
 }
 
+declare const enum ModalWindowButtonIds {
+  Ok = 'ok-button',
+  Cancel = 'cancel-button',
+}
+
 class ModalWindow extends HTMLElement {
   static get observedAttributes(): string[] {
     return [

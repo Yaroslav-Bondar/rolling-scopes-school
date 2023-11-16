@@ -43,11 +43,6 @@ declare const enum ModalWindowEvents {
   FindKittens = 'find-kittens',
 }
 
-declare const enum ModalWindowButtonIds {
-  Ok = 'ok-button',
-  Cancel = 'cancel-button',
-}
-
 declare const enum SetAttributesMode {
   Write = 'write',
   Overwrite = 'overwrite',
