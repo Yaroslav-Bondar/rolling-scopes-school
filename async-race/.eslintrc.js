@@ -20,6 +20,8 @@ module.exports = {
       ],
       rules: {
         'class-methods-use-this': ['error'],
+        'import/prefer-default-export': 'off',
+        'no-restricted-syntax': 'off',
       },
       plugins: [
         '@typescript-eslint',

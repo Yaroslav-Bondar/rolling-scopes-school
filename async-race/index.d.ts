@@ -1,18 +1,9 @@
-declare const enum Routes {
-  Main = '/',
-  Users = '/users',
-  Posts = '/posts',
-  Error = '/error',
-}
-
 declare const enum SearchTypes {
   Post = 'post',
   User = 'user',
 }
 
-declare const enum ErrorTypes {
-  Error_404 = '404',
-}
+declare type Page = (props: Record<string, string | number>) => string;
 
 declare const enum NavLinkDataAttributes {
   Selected = 'data-link-selected',

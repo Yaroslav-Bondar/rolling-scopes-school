@@ -1,5 +1,6 @@
 import createElement from '../../services/createElement';
 import setDataAttributes from '../../services/setDataAttributes';
+import { goTo, routes } from '../../router/index';
 import modalWindowSearchErrorHtml from './html/modalWindowSearchError.html';
 import modalWindowSearchKittensHtml from './html/modalWindowSearchKittens.html';
 
@@ -18,7 +19,7 @@ declare const enum DataAttributes {
 }
 
 interface NavLink {
-  href: Routes;
+  href: string;
   text: string;
   class: CssClasses;
 }
@@ -30,17 +31,17 @@ class MainNavigation extends HTMLElement {
 
   private navLinks: NavLink[] = [
     {
-      href: Routes.Main,
+      href: routes.index.path,
       text: 'Home',
       class: CssClasses.MainMenuLink,
     },
     {
-      href: Routes.Users,
+      href: routes.users.path,
       text: 'Users',
       class: CssClasses.MainMenuLink,
     },
     {
-      href: Routes.Posts,
+      href: routes.posts.path,
       text: 'Posts',
       class: CssClasses.MainMenuLink,
     },
@@ -173,9 +174,13 @@ class MainNavigation extends HTMLElement {
       return;
     }
     if (this.isDefaultSearchType(this.searchType)) {
-      // TODO: render the users page
+      const route = routes.usersSearch.reverse({ query: text });
+      const path = route || routes.error.reverse({ code: 404 }) as string;
+      goTo(path);
     } else if (this.searchType === SearchTypes.Post) {
-      // TODO: render the posts page
+      const route = routes.postsSearch.reverse({ query: text });
+      const path = route || routes.error.reverse({ code: 404 }) as string;
+      goTo(path);
     }
   };
 
