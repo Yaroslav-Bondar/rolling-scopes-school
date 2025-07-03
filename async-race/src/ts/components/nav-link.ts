@@ -1,16 +1,18 @@
+import { Component } from './component';
 import { goTo } from '../router';
-import createElement from '../services/createElement';
+import { createElement } from '../services';
 
-class NavLink extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return [NavLinkDataAttributes.Selected, 'href', NavLinkDataAttributes.Text];
+declare global {
+  interface HTMLElementTagNameMap {
+    'x-nav-link': NavLinkComponent;
   }
+}
 
+class NavLinkComponent extends Component {
   constructor() {
     super();
-    const shadow: ShadowRoot = this.attachShadow({ mode: 'open' });
-    shadow.innerHTML = '<a></a>';
-    const style: HTMLStyleElement = createElement({ tag: 'style' }) as HTMLStyleElement;
+    this.shadowDom.innerHTML = '<a></a>';
+    const style: HTMLStyleElement = createElement({ tag: 'style' });
     style.textContent = `
       a {
         color: lightgreen;
@@ -26,7 +28,11 @@ class NavLink extends HTMLElement {
       }
     `;
     this.addEventListener('click', this.onClick);
-    shadow.append(style);
+    this.shadowDom.append(style);
+  }
+
+  static get observedAttributes(): string[] {
+    return [NavLinkDataAttributes.Selected, 'href', NavLinkDataAttributes.Text];
   }
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
@@ -45,7 +51,7 @@ class NavLink extends HTMLElement {
     return this.getAttribute(NavLinkDataAttributes.Selected) === 'true';
   }
 
-  onClick(event: Event): void {
+  private onClick(event: Event): void {
     event.preventDefault();
     if (this.isSelected) return;
     const path: string | null = this.getAttribute('href');
@@ -53,10 +59,9 @@ class NavLink extends HTMLElement {
     goTo(path);
   }
 
-  setActiveStyle(): void {
+  private setActiveStyle(): void {
     if (!this.isSelected) return;
-    const style: HTMLStyleElement | null | undefined = this.shadowRoot?.querySelector('style');
-    if (!style) throw new Error('Missing style.');
+    const style = this.getElement()('style');
     style.innerHTML = `
       a {
         color: red;
@@ -69,21 +74,14 @@ class NavLink extends HTMLElement {
     `;
   }
 
-  updateHref(value: string): void {
-    if (!value) return;
-    const shadow: ShadowRoot | null = this.shadowRoot;
-    const link: HTMLAnchorElement | null | undefined = shadow?.querySelector('a');
-    if (!link) throw new Error('Missing link.');
-    link.setAttribute('href', value);
+  private updateHref(value: string): void {
+    const link: HTMLAnchorElement = this.getElement()('a');
+    link.href = value;
   }
 
-  updateText(value: string) {
-    if (!value) return;
-    const shadow: ShadowRoot | null = this.shadowRoot;
-    const link: HTMLAnchorElement | null | undefined = shadow?.querySelector('a');
-    if (!link) throw new Error('Missing link.');
-    link.textContent = value;
+  private updateText(value: string) {
+    this.getElement()('a').textContent = value;
   }
 }
 
-customElements.define('nav-link', NavLink);
+customElements.define('x-nav-link', NavLinkComponent);

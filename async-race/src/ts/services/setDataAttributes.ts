@@ -11,7 +11,7 @@ interface SetDataAttributesOptions {
  * it doesn't delete existing attributes. 'Overwrite' mode does the same thing,
  * but removes existing attributes if they aren't defined in exceptions.
  */
-export default function setDataAttributes(
+export function setDataAttributes(
   this: HTMLElement,
   attributes: AttributesData,
   options: SetDataAttributesOptions = {

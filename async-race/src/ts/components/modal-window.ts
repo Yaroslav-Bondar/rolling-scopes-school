@@ -1,74 +1,57 @@
-import isValueInEnum from '../services/isValueInEnum';
+import { Component } from './component';
 
-enum WindowTypes {
-  Error = ModalWindowTypes.Error,
-  Info = ModalWindowTypes.Info,
-  Warning = ModalWindowTypes.Warning,
-}
-
-declare const enum ModalWindowButtonIds {
+const enum ButtonSlotNames {
   Ok = 'ok-button',
   Cancel = 'cancel-button',
 }
 
-class ModalWindow extends HTMLElement {
+type UnderStyle = 'title' | 'message';
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'x-modal-window': ModalWindowComponent;
+  }
+}
+
+class ModalWindowComponent extends Component {
   static get observedAttributes(): string[] {
-    return [
-      ModalWindowDataAttributes.Type,
-      ModalWindowDataAttributes.Opened,
-    ];
+    return [ModalWindowDataAttributes.Type, ModalWindowDataAttributes.Opened];
   }
 
-  private shadow: ShadowRoot;
+  private readonly styles: Readonly<Record<ModalWindowTypes, Readonly<Record<UnderStyle, string>>>> = {
+    info: {
+      title: 'background-color: #00f; color: #fff;',
+      message: 'color: blue; font-style: italic;',
+    },
+    error: {
+      title: 'background-color: #f00; color: #fff',
+      message: 'border: 2px solid red; font-weight: bold;',
+    },
+    warning: {
+      title: 'background-color: #e0cf34; color: #333;',
+      message: 'color: greenyellow;',
+    },
+  };
 
-  private defaultWindowType: ModalWindowTypes = ModalWindowTypes.Info;
+  private readonly defaultWindowType: ModalWindowTypes = ModalWindowTypes.Info;
 
-  private defaultWindowEventOk: ModalWindowEvents = ModalWindowEvents.Ok;
+  private readonly defaultWindowEventOk: ModalWindowEvents = ModalWindowEvents.Ok;
 
-  private defaultWindowEventCancel: ModalWindowEvents = ModalWindowEvents.Cancel;
+  private readonly defaultWindowEventCancel: ModalWindowEvents = ModalWindowEvents.Cancel;
 
   constructor() {
     super();
-    this.shadow = this.attachShadow({ mode: 'open' });
-    const template: HTMLTemplateElement | null = document.getElementById('modal-window-template') as HTMLTemplateElement;
-    if (!template) {
-      throw new Error('Missing template.');
-    }
-    const templateContent: HTMLElement = template.content.cloneNode(true) as HTMLElement;
-    const style: HTMLElement | null = templateContent.querySelector('style') as HTMLElement;
-    if (!style) {
-      throw new Error('Missing styles');
-    }
-    style.textContent += `
-      .modal-window__title_theme_${ModalWindowTypes.Error} {
-        background-color: #f00;
-        color: #fff;
-      }
-      .modal-window__title_theme_${ModalWindowTypes.Info} {
-        background-color: #00f;
-        color: #fff;
-      }
-      .modal-window__title_theme_${ModalWindowTypes.Warning} {
-        background-color: #e0cf34;
-        color: #333;
-      }
-      `;
-    const background: HTMLElement | null = templateContent.querySelector('.modal-window__background');
-    if (!background) {
-      throw new Error('No background.');
-    }
-    background.addEventListener('click', this.handleClickCancelBtn);
-    const buttonContainer: HTMLElement | null = templateContent.querySelector('.modal-window__buttons');
-    if (!buttonContainer) {
-      throw new Error('There is no button container.');
-    }
-    buttonContainer.addEventListener('slotchange', this.handleButtonSlotChange);
-    this.shadow.append(templateContent);
+    const template = this.getElement<'template'>(document)('#modal-window-template');
+    this.shadowDom.append(template.content.cloneNode(true));
+    const background = this.getElement<'div'>()('.modal-window__background');
+    const buttonContainer = this.getElement<'div'>()('.modal-window__buttons');
+    background.addEventListener('click', this.handleClickCancelBtn.bind(this));
+    buttonContainer.addEventListener('slotchange', this.handleButtonSlotChange.bind(this));
   }
 
   attributeChangedCallback(name: ModalWindowDataAttributes): void {
     if (name === ModalWindowDataAttributes.Type) {
-      this.changeTitleStyle(this.windowType);
+      this.changeStyle(this.windowType);
     }
     if (name === ModalWindowDataAttributes.Opened) {
       this.toggleOpenState(this.windowOpened);
@@ -81,7 +64,7 @@ class ModalWindow extends HTMLElement {
     }
   }
 
-  get windowType(): string | null {
+  get windowType() {
     return this.getAttribute(ModalWindowDataAttributes.Type);
   }
 
@@ -97,69 +80,61 @@ class ModalWindow extends HTMLElement {
     return this.getAttribute(ModalWindowDataAttributes.EventCancel);
   }
 
-  handleButtonSlotChange = (event: Event) => {
+  private handleButtonSlotChange(event: Event) {
     event.stopPropagation();
     const slot: HTMLSlotElement = event.target as HTMLSlotElement;
     const assigned: Node[] = slot.assignedNodes();
-    if (assigned.length > 1) {
-      throw new Error('There should be one button in the slot.');
-    }
-    if (!assigned.length) {
-      return;
-    }
+    if (assigned.length > 1) throw new Error('There should be one button in the slot.');
+    if (assigned.length <= 0) return;
     const btn: HTMLButtonElement = assigned[0] as HTMLButtonElement;
-    const btnSlotName: string | null = btn.getAttribute('slot');
-    if (btnSlotName === ModalWindowButtonIds.Ok) {
-      btn.onclick = this.handleClickOkBtn;
-    } else if (btnSlotName === ModalWindowButtonIds.Cancel) {
-      btn.onclick = this.handleClickCancelBtn;
-    }
-    btn.setAttribute('style', 'background-color: yellow;padding: 3px 5px;');
-  };
-
-  handleClickOkBtn = (event: Event): void => {
-    event.stopPropagation();
-    const eventOk: CustomEvent = new CustomEvent(
-      this.windowEventOk
-    || this.defaultWindowEventOk,
-    );
-    this.dispatchEvent(eventOk);
-  };
-
-  handleClickCancelBtn = (event: Event): void => {
-    event.stopPropagation();
-    const eventCancel: CustomEvent = new CustomEvent(
-      this.windowEventCancel
-    || this.defaultWindowEventCancel,
-    );
-    this.dispatchEvent(eventCancel);
-  };
-
-  changeTitleStyle(type: string | null): void {
-    const title: HTMLElement | null | undefined = this.shadowRoot?.querySelector('.modal-window__title');
-    if (!title) throw new Error('Missing title.');
-    if (type === null) {
-      title.setAttribute('class', `modal-window__title modal-window__title_theme_${this.defaultWindowType}`);
-    } else if (isValueInEnum(type, WindowTypes)) {
-      title.setAttribute('class', `modal-window__title modal-window__title_theme_${type}`);
-    } else {
-      throw new Error('The modal window type is incorrect.');
+    const btnSlotName = btn.getAttribute('slot');
+    if (btnSlotName === ButtonSlotNames.Ok) {
+      btn.onclick = this.handleClickOkBtn.bind(this);
+    } else if (btnSlotName === ButtonSlotNames.Cancel) {
+      btn.onclick = this.handleClickCancelBtn.bind(this);
     }
   }
 
-  toggleOpenState(state: string | null): void {
-    const modalWindow: HTMLElement | null | undefined = this.shadowRoot?.querySelector('.modal-window');
-    if (!modalWindow) throw new Error('There is no modal window.');
+  private handleClickOkBtn(event: Event): void {
+    event.stopPropagation();
+    const eventOk: CustomEvent = new CustomEvent(this.windowEventOk || this.defaultWindowEventOk);
+    this.dispatchEvent(eventOk);
+  }
+
+  private handleClickCancelBtn(event: Event): void {
+    event.stopPropagation();
+    const eventCancel: CustomEvent = new CustomEvent(this.windowEventCancel || this.defaultWindowEventCancel);
+    this.dispatchEvent(eventCancel);
+  }
+
+  private changeStyle(type: string | null): void {
+    const getDivElement = this.getElement<'div'>();
+    const title = getDivElement('.modal-window__title');
+    const message = getDivElement('.modal-window__message');
+    if (type === null) {
+      title.style.cssText = this.styles[this.defaultWindowType].title;
+      message.style.cssText = this.styles[this.defaultWindowType].message;
+      return;
+    }
+    if (!Object.keys(this.styles).includes(type)) throw new Error('The modal window type is incorrect.');
+    // After checking, we can assert about this type.
+    const windowType = type as ModalWindowTypes;
+    title.style.cssText = this.styles[windowType].title;
+    message.style.cssText = this.styles[windowType].message;
+  }
+
+  private toggleOpenState(state: string | null): void {
+    const modalWindow = this.getElement<'div'>()('.modal-window');
     if (state === null) {
-      modalWindow.setAttribute('class', 'modal-window');
+      modalWindow.style.display = 'none';
     } else if (state === ModalWindowStates.Opened) {
-      modalWindow.setAttribute('class', 'modal-window modal-window_opened');
+      modalWindow.style.display = 'flex';
     } else if (state === ModalWindowStates.Closed) {
-      modalWindow.setAttribute('class', 'modal-window');
+      modalWindow.style.display = 'none';
     } else {
       throw new Error('The open state of the modal window is incorrect.');
     }
   }
 }
 
-customElements.define('modal-window', ModalWindow);
+customElements.define('x-modal-window', ModalWindowComponent);

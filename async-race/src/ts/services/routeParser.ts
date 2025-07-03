@@ -1,6 +1,7 @@
-// Work with routes. It's based on this route parser library -
+// Work with routes. It works similarly to this library:
 // https://github.com/rcs/route-parser.
 // This library can be used in more complex cases.
+
 export class Route {
   private prefix = ':';
 

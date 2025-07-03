@@ -1,3 +1,3 @@
 export const mainPage: Page = (props = {}) => `
-<main-navigation class="main-navigation" data-search="${props.search || ''}"></main-navigation>
-<main-component>Main</main-component>`;
+<x-navigation data-search="${props.search || ''}"></x-navigation>
+<x-main>Main</x-main>`;

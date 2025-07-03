@@ -1,5 +1,5 @@
-class Main extends HTMLElement {
+import { Component } from './component';
 
-}
+class MainComponent extends Component {}
 
-customElements.define('main-component', Main);
+customElements.define('x-main', MainComponent);

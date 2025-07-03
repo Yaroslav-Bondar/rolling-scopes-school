@@ -1,21 +1,17 @@
-import { Route } from '../services/routeParser';
-import { mainPage } from '../pages/main.template';
-import { usersPage } from '../pages/users.template';
-import { postsPage } from '../pages/posts.template';
-import { errorPage } from '../pages/error.template';
+import { Route } from '../services';
+import { mainPage, postsPage, postsByUserPage, usersPage, userPage, errorPage } from '../pages';
+import { Routes } from '../constants';
 
-interface RoutingData {
-  route: Route;
-  page: Page;
-}
+const routes = Object.fromEntries(
+  Object.keys(Routes).map((key: string) => [key, new Route(Routes[key as keyof typeof Routes])]),
+);
 
-const routeData = [
-  { id: 'index', path: '/', page: mainPage },
-  { id: 'posts', path: '/posts', page: postsPage },
-  { id: 'postsSearch', path: '/posts/query/:query', page: postsPage },
-  { id: 'users', path: '/users', page: usersPage },
-  { id: 'usersSearch', path: '/users/query/:query', page: usersPage },
-  { id: 'error', path: '/error/:code', page: errorPage },
+const routesWithPages = [
+  { route: routes.Index, page: mainPage },
+  { route: routes.Posts, page: postsPage },
+  { route: routes.PostsByUser, page: postsByUserPage },
+  { route: routes.Users, page: usersPage },
+  { route: routes.User, page: userPage },
 ];
 
 const root: HTMLElement | null = document.getElementById('root');
@@ -24,13 +20,13 @@ if (!root) {
   throw new Error('No root.');
 }
 
-const routingData = routeData.map(({ id, path, page }) => ({ id, route: new Route(path), page }));
-
-const routes = Object.fromEntries(routingData.map(({ id, route }) => [id, route]));
-
 const getRoutingData = (path: string) => {
-  const iterate = (data: RoutingData) => data.route.match(path);
-  const data = routingData.find(iterate);
+  interface RouteWithPage {
+    route: Route;
+    page: Page;
+  }
+  const iterate = (data: RouteWithPage) => data.route.match(path);
+  const data = routesWithPages.find(iterate);
   if (!data) {
     return false;
   }

@@ -13,21 +13,15 @@ module.exports = {
   },
   overrides: [
     {
-      files: [
-        '*.ts',
-        '*.tsx',
-        '*.d.ts',
-      ],
+      files: ['*.ts', '*.tsx', '*.d.ts'],
       rules: {
         'class-methods-use-this': ['error'],
         'import/prefer-default-export': 'off',
         'no-restricted-syntax': 'off',
       },
-      plugins: [
-        '@typescript-eslint',
-      ],
+      plugins: ['@typescript-eslint'],
       parser: '@typescript-eslint/parser',
-      extends: ['airbnb-base', 'airbnb-typescript/base'],
+      extends: ['airbnb-base', 'airbnb-typescript/base', 'prettier'],
       parserOptions: {
         project: './tsconfig.json',
       },

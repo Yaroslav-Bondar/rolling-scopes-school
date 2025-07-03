@@ -1,4 +1,11 @@
-import './main-navigation';
+import './navigation';
 import './main';
 import './nav-link';
 import './modal-window';
+import './users';
+import './pagination';
+import './user';
+import './posts';
+import './postsByUser';
+import './post';
+import './list';

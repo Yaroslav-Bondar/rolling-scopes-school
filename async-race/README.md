@@ -2,10 +2,9 @@
 
 ## [Task](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/async-race.md#cross-check) "Async Race"
 
-| Folder name   | Branch name   |
-| ------------- | ------------- |
-| async-race    | async-race    |
-
+| Folder name | Branch name |
+| ----------- | ----------- |
+| async-race  | async-race  |
 
 Your customer has an idea to spend his money. He has hired some engineers who installed some radio-controlled equipment :radio: to real cars :car:. To the all his collection of cars to be precise. He is eager to create kind of drag-racing competition in order to discover which car fastest.
 
@@ -20,6 +19,7 @@ We have found in the latest news that a new company called "The Fast and the Fur
 What are you waiting for? Let's coding!
 
 ## Functional requirements
+
 1. Basic structure:
    - (**+5**) There should be two views on the site: "Garage" and "Winners".
    - (**+5**) "Garage" view should contain its name, page number, and the full amount of items in the database (how many car user has in his garage).
@@ -48,6 +48,7 @@ What are you waiting for? Let's coding!
    - (**+10**) User should be able to sort cars by wins number and by best time (ASC, DESC).
 
 ## Non-functional requirements
+
 - (**-100%** for not fulfillment) It's forbidden to use any libraries or frameworks, like JQuery, React, Angular, Lodash, Material Design, etc. But you can use CSS from Bootstrap (**CSS only!**) if you wish.
 - (**-100%** for not fulfillment) Typescript must be used. Types of input and output parameters of all the methods must be described. Using type "any" is strictly forbidden.
 - (**+40**) Application is divided to logical modules / layers. Like working with api it's separate module, as well as working with UI rendering, or working with an application state, etc. Better discuss architecture with a mentor before implementing.
@@ -60,17 +61,21 @@ What are you waiting for? Let's coding!
 - (**+5**) Code shouldn't contain magical numbers or strings.
 
 ## Requirements to commits, PR and repo
+
 [Stage 2 requirements](https://docs.rs.school/#/en/pull-request-review-process)
 NB: for mentor's check - submit link to PR, for cross-check - submit link to deploy.
 
 ## Key skills
+
 - Сommunication with a server (fetch, REST API)
 - Async coding / Promises
 - JS Animations
 - DOM Api
 
-----
+---
+
 ## Cross-check:
+
 - Max score: **190**.
 - UI should be deployed to gh-pages, netlify or some similar service and the link shared via RS App.
 - Reviewer should clone [repo with a server](https://github.com/mikhama/async-race-api.git) and keep the server running during functionality review.
@@ -81,10 +86,12 @@ NB: for mentor's check - submit link to PR, for cross-check - submit link to dep
 - **Note:** When you push the "start engine button" and then the "stop engine button" or the "start race button" and "reset race button" and repeating this operation again and again as a mad man sometimes you can see an error with the status codes "404" or "429". Officially it is not a bug.
 
 ## Mentor's review
+
 - Max score: **150**.
 - Task should be scored in accordance with [Non-functional requirements](#non-functional-requirements). You can find score points near each requirement.
 
 ## FAQ
+
 You can find answers and questions in this document:
 https://docs.google.com/spreadsheets/d/1KrObgPHt6guthtswtB8AKhrLpRZ_Kf8H-3V63VDCBGw/edit?usp=sharing
 
